@@ -1,0 +1,368 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: THICCCBOI-Black;
+    src: url(./assets/fonts/Thicccboi/THICCCBOI-Black.woff2);
+    font-display: swap;
+}
+
+@font-face {
+    font-family: THICCCBOI-Bold;
+    src: url(./assets/fonts/Thicccboi/THICCCBOI-Bold.woff2);
+    font-display: swap;
+}
+
+@font-face {
+    font-family: THICCCBOI-ExtraBold;
+    src: url(./assets/fonts/Thicccboi/THICCCBOI-ExtraBold.woff2);
+    font-display: swap;
+}
+
+@font-face {
+    font-family: THICCCBOI-Light;
+    src: url(./assets/fonts/Thicccboi/THICCCBOI-Light.woff2);
+    font-display: swap;
+}
+
+@font-face {
+    font-family: THICCCBOI-Medium;
+    src: url(./assets/fonts/Thicccboi/THICCCBOI-Medium.woff2);
+    font-display: swap;
+}
+
+@font-face {
+    font-family: THICCCBOI-Regular;
+    src: url(./assets/fonts/Thicccboi/THICCCBOI-Regular.woff2);
+    font-display: swap;
+}
+
+@font-face {
+    font-family: THICCCBOI-SemiBold;
+    src: url(./assets/fonts/Thicccboi/THICCCBOI-SemiBold.woff2);
+    font-display: swap;
+}
+
+@font-face {
+    font-family: THICCCBOI-ThicccAF;
+    src: url(./assets/fonts/Thicccboi/THICCCBOI-ThicccAF.woff2);
+    font-display: swap;
+}
+
+@font-face {
+    font-family: THICCCBOI-Thin;
+    src: url(./assets/fonts/Thicccboi/THICCCBOI-Thin.woff2);
+    font-display: swap;
+}
+
+@layer utilities {
+    .bg-custom-gradient {
+        background: linear-gradient(94.24deg, rgba(255, 255, 255, 0.2) -8.22%, rgba(75, 197, 0, 0.2) 105.74%);
+    }
+}
+
+/* Select */
+::selection {
+    background: #4BC300;
+    color: #fff;
+    text-shadow: none;
+}
+
+
+::-webkit-scrollbar {
+    width: 6px;
+    background-color: #060505;
+}
+
+::-webkit-scrollbar-button:start:decrement,
+::-webkit-scrollbar-button:end:increment {
+    display: none;
+}
+
+::-webkit-scrollbar-track-piece {
+    background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb:vertical {
+    border-radius: 0px;
+    background-image: linear-gradient(100.68deg, #4BC300 -19.35%, #336613 135.67%) !important;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #060505;
+    overflow-x: hidden;
+}
+
+.primary-gradient {
+    background: linear-gradient(100.68deg, #4BC300 0%, #336613 100%);
+}
+
+.primary-gradient:hover {
+    background: linear-gradient(100.68deg, #358603 0%, #336613 100%);
+}
+
+.secondary-gradient {
+    background: linear-gradient(97.17deg, #0A0A0A 0.91%, #0A0A0A 100%);
+}
+
+.menu .active {
+    border: 1px solid #4CC800;
+    color: #4CC800;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 800;
+}
+
+.menu .active::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 100%;
+    background-color: #4CC800;
+}
+
+.cart-link.active {
+    border: 1px solid #4CC800 !important;
+}
+
+.cart-link.active * {
+    color: #4CC800 !important;
+}
+
+/* Audio player */
+.loader {
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top: 4px solid white;
+    width: 16px;
+    height: 16px;
+    -webkit-animation: spin 1s linear infinite;
+    /* Safari */
+    animation: spin 1s linear infinite;
+}
+
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Credits Slider */
+.credits-slider .slick-slide:hover img {
+    transform: scale(1.05);
+}
+
+.slick-next,
+.slick-prev {
+    z-index: 100 !important;
+}
+
+.slick-next:before,
+.slick-prev:before {
+    font-size: 30px;
+    color: green !important;
+}
+
+/* Review slider */
+.review-slider .slick-prev,
+.review-slider .slick-next {
+    display: none !important;
+}
+
+.slick-dots {
+    bottom: -50px !important;
+}
+
+.slick-dots li {
+    width: fit-content !important;
+}
+
+.slick-dots li button {
+    width: 5px !important;
+    height: 5px !important;
+    background: white !important;
+    opacity: .5 !important;
+    border-radius: 50px;
+}
+
+li.slick-active button {
+    background: #4dc826 !important;
+}
+
+/* You can add this to your global CSS file if necessary */
+.transition-max-height {
+    transition: max-height 0.5s ease-in-out;
+}
+
+.custom-shadow {
+    box-shadow: 0px 24px 30px 0px #4DC8011A;
+}
+
+/* src/components/Preloader.css */
+.preloader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #000;
+}
+
+/* Animation for backdrop */
+.backdrop {
+    opacity: 0;
+    animation: fadeIn 0.5s forwards;
+}
+
+/* Keyframes for animations */
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideDown {
+    to {
+        transform: translateY(0);
+    }
+}
+
+/* Transition for hamburger icon */
+button.open {
+    transform: rotate(90deg);
+}
+
+.credits-image {
+    transition: width .2s ease-in-out;
+}
+
+/* Add this to your CSS file */
+.product-loader {
+    border: 16px solid #000;
+    border-top: 16px solid #41AA00;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.pagination li {
+    width: 64px;
+    height: 64px;
+    gap: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pagination li.active {
+    color: #4CC800;
+}
+
+.previous a,
+.next a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #FFFFFF;
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+}
+
+@media screen and (max-width: 768px) {
+    .pagination li {
+        width: 44px;
+        height: 44px;
+    }
+}
+
+.custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.custom-modal-content {
+    max-height: calc(100vh - 40px);
+    background: white;
+    padding: 0 20px 20px;
+    border-radius: 8px;
+    position: relative;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.audio-wave-player-btn {
+    transform: translateX(calc(-1 * (150px / 2 - 20px)));
+}
+
+@media screen and (max-width: 1024px) {
+    .audio-wave-player-btn {
+        transform: translateX(calc(-1 * (48px / 2 - 20px)));
+    }
+}
+
+
+/* Add this to your CSS file */
+@media only screen and (max-width: 600px) {
+    .Toastify__toast-container {
+        width: 100% !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 20px;
+        margin: auto;
+    }
+
+    .Toastify__toast {
+        width: 50% !important;
+        font-size: 12px;
+        border-radius: 5px !important;
+    }
+}
+
+.gallery .grid .w-full * {
+    width: 100% !important;
+    height: 250px !important;
+    object-fit: cover !important;
+}
