@@ -101,7 +101,7 @@ export default function Home() {
         <div className="max-w-[1110px] mx-auto flex flex-col gap-8 relative z-10">
           <h1 className="text-white font-THICCCBOI-ExtraBold text-[40px] sm:text-[50px] font-bold lg:text-[60px] leading-tight xl:font-extrabold xl:text-[70px] xl:leading-[80px] text-center">Professional Online <br className="hidden xl:block" /> Mixing and Mastering Services At <br className="hidden xl:block" /> A Very Affordable Price!</h1>
           <WaveformAudioPlayer />
-          <Link to={"/samples"} className="text-base leading-none text-center font-Montserrat font-medium primary-gradient transition-all duration-300 ease-in-out active:scale-95 block mx-auto py-4 px-12 text-white rounded-full mt-8">More Samples</Link>
+          <Link to={"/samples"} className="text-base leading-none text-center font-Montserrat font-medium primary-gradient transition-all duration-300 ease-in-out active:scale-95 block mx-auto py-4 px-12 text-white rounded-full mt-8">Get Started</Link>
         </div>
       </section>
 
@@ -117,14 +117,8 @@ export default function Home() {
       <section className="banefits-content relative mb-24 bg-[#0B1306] sm:rounded-[30px] px-5 md:px-10 xl:px-0">
         <div className="max-w-[1110px] relative z-20 mx-auto py-9">
           <h2 className="font-THICCCBOI-Medium font-medium text-[40px] leading-[50px] mb-7">What Are the Benefits of Using Online Mixing and Mastering Services?</h2>
-          <div className='flex flex-col-reverse lg:flex-row items-stretch gap-8'>
-            <div className="w-full lg:w-1/2 flex flex-col gap-5">
-              <picture>
-                <source srcSet={Home1} type="image/webp" />
-                <img src={Home1} className="w-full rounded-xl h-full object-fill" alt="Benefits Video Image" />
-              </picture>
-            </div>
-            <div className='w-full lg:w-1/2 pr-5 flex flex-col gap-3'>
+          <div className='flex flex-col-reverse items-stretch gap-8'>
+            <div className='w-full pr-5 flex flex-col gap-3'>
               <div className="flex items-center justify-start gap-3 ">
                 <p className="font-DMSANS font-normal text-base leading-6">The biggest benefit of using online mixing and mastering services is that you can save a lot of money and use the rest for things like marketing, video shoots, and promotion, all of which are expensive to begin.</p>
               </div>
