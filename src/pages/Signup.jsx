@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import LOGO from "../assets/images/logo.png";
-import loginBg from "../assets/images/login-bg.webp";
+import signupBg from "../assets/images/home-3.webp";
+import purpleShadow from "../assets/images/purple-shadow-bg.webp" 
 import { Link } from 'react-router-dom';
 import { ArrowLeftIcon, EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline"; // Importing eye icons for show/hide password
 import { API_ENDPOINT } from '../utils/constants';
@@ -74,12 +75,13 @@ const Signup = () => {
     };
 
     return (
-        <div className='w-full h-screen flex items-center justify-end text-black overflow-hidden'>
-            <div className='absolute w-full h-full left-[-20%] -z-10'>
-                <picture>
-                    <source srcSet={loginBg} type="image/webp" />
-                    <img src={loginBg} className='w-full h-full object-fill' alt="Login Background" />
+        <div className='w-full h-screen flex items-center justify-start text-black overflow-hidden'>
+            <div className='absolute w-full h-full right-0 -z-10'>
+                <picture className='relative'>
+                    <source srcSet={signupBg} type="image/webp" />
+                    <img src={signupBg} className='w-full h-full object-fill' alt="Login Background" />
                 </picture>
+                <img className='absolute -top-[50%] right-0 pointer-events-none' src={purpleShadow} alt="purpleShadow" />
             </div>
 
             <div className='w-full md:max-w-[600px] relative top-0 md:w-2/4 h-full bg-white flex flex-col justify-center gap-12 items-center p-5 sm:p-8 md:p-10'>

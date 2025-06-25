@@ -124,7 +124,7 @@ const Contact = () => {
                                 />
                                 {errors.message && <span className="text-red-500">{errors.message.message}</span>}
                             </div>
-                            <button type='submit' disabled={isSubmitting} className='primary-gradient transition-all duration-300 ease-in-out active:scale-95 font-Montserrat font-medium text-base leading-4 text-white h-[48px] px-12 w-fit flex items-center justify-center rounded-full'>{isSubmitting ? 'Sending...' : 'Send Message'}</button>
+                            <button type='submit' disabled={isSubmitting} className='primary-gradient transition-all duration-300 ease-in-out active:scale-95 font-Montserrat font-medium text-base leading-4 text-white h-[48px] px-12 w-fit flex items-center justify-center rounded-full'>{isSubmitting ? 'Sending...' : 'Submit'}</button>
                         </form>
                     </div>
                 </div>

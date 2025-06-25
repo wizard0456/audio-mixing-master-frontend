@@ -25,7 +25,6 @@ const Samples = () => {
     useEffect(() => {
         async function fetchData() {
             const response = await axios.get(`${API_ENDPOINT}sample-audios?per_page=${itemsPerPage}&page=${currentPage}`);
-
             setAudios(response.data.data);
             setCurrentPage(response.data.current_page);
             setPageCount(response.data.last_page);

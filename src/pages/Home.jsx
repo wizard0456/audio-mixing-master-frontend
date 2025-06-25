@@ -10,7 +10,7 @@ import { Slide, toast } from 'react-toastify';
 import WaveformAudioPlayer from '../components/WaveformAudioPlayer';
 
 // Import utils
-import { API_ENDPOINT } from "../utils/constants";
+import { API_ENDPOINT, DOMAIN } from "../utils/constants";
 
 // Import assets
 import BenefitsVideoImage from "../assets/images/home-1.webp";
@@ -38,10 +38,27 @@ import Home1 from "../assets/images/home1.webp";
 import StarBoldIcon from "../assets/images/star-bold-icon.png"
 import MonthlySubBanner from "../assets/images/montly-subscription-banner.png" 
 import WhiteLogo from "../assets/images/logo-white.png";
+import AudioPlayer from '../components/AudioPlayer';
 
 export default function Home() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false); // State for loading
+  const [samples, setSamples] = useState([]);
+  const [samplesLoading, setSamplesLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchTopSamples() {
+      try {
+        const response = await axios.get(`${API_ENDPOINT}sample-audios?per_page=3&page=1`);
+        setSamples(response.data.data);
+        setSamplesLoading(false);
+      } catch (error) {
+        console.error("Error fetching samples:", error);
+        setSamplesLoading(false);
+      }
+    }
+    fetchTopSamples();
+  }, []);
 
   const handleEmailSubmit = async (event) => {
     event.preventDefault();
@@ -117,7 +134,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="banefits-content relative mb-24 bg-[#0B1306] sm:rounded-[30px] px-5 md:px-10 xl:px-0">
+      <section className="banefits-content relative mb-24 bg-[#0B1306] px-5 md:px-10 xl:px-0">
         <div className="max-w-[1110px] relative z-20 mx-auto py-9">
           <h2 className="font-THICCCBOI-Medium font-medium text-[40px] leading-[50px] mb-7">What Are the Benefits of Using Online Mixing and Mastering Services?</h2>
           <div className='flex flex-col-reverse items-stretch gap-8'>
@@ -156,10 +173,10 @@ export default function Home() {
 
       <section className='samples-section relative z-10 mb-24 px-5 md:px-10 xl:px-0'>
         <div className="max-w-[1110px] relative z-20 mx-auto py-9">
-          <h2 className='font-THICCCBOI-Medium font-medium text-[40px] leading-[50px] mb-7'>Before & After Samples</h2>
           <div className='flex flex-col-reverse lg:flex-row items-stretch gap-8'>
             <div className="w-full lg:w-1/2 flex flex-col justify-between items-stretch gap-5 lg:gap-0">
               <div className="flex flex-col justify-between items-stretch gap-8">
+                <h2 className='font-THICCCBOI-Medium font-medium text-[40px] leading-[50px] mb-7'>Before & After Samples</h2>
                 <p className="font-Roboto text-base md:text-base font-normal leading-6 text-center lg:text-left">
                   If you are struggling to find the best mixing and mastering services for your next music release, then we’ve got you covered. Give a head start to your music career and let us help you get studio-quality mastered tracks. Our team of real hands-on engineers will fine-tune your songs to a radio-ready quality, so you can impress your listeners and boost your career like never before. Below you can listen to our before and after, mixing and mastering examples. This should give you a decent understanding of what mixing and mastering are and how they may assist you in creating a great song.
                 </p>
@@ -167,7 +184,27 @@ export default function Home() {
               <Link to={"/samples"} className="text-base leading-none text-center font-Montserrat font-medium primary-gradient transition-all duration-300 ease-in-out active:scale-95 block mx-auto py-4 px-12 text-white rounded-full mt-8">More Examples</Link>
             </div>
             <div className="w-full lg:w-1/2 flex flex-col gap-5">
-              
+              {samplesLoading ? (
+                <div className="flex flex-col gap-4">
+                  {[...Array(3)].map((_, index) => (
+                    <div key={index} className="w-full h-32 bg-gray-700 rounded-lg animate-pulse"></div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-col gap-4">
+                  {samples.map((sample) => (
+                    <div key={sample.id} className="w-full">
+                      <AudioPlayer
+                        beforeAudioSrc={sample?.before_audio ? `${DOMAIN}${sample?.before_audio}` : ""}
+                        afterAudioSrc={sample?.after_audio ? `${DOMAIN}${sample?.after_audio}` : ""}
+                        beforeAudioName={sample?.name ? sample?.name : "Sample"}
+                        afterAudioName={sample?.name ? sample?.name : "Sample"}
+                        id={sample?.id.toString()}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -179,7 +216,7 @@ export default function Home() {
             <source srcSet={MonthlySubBanner} type='image/png' />
             <img src={MonthlySubBanner} alt="MonthlySubBanner" />
           </picture>
-          <Link to={"/samples"} className="text-base leading-none text-center font-Montserrat font-medium bg-black transition-all duration-300 block mx-auto py-4 px-12 text-white rounded-full absolute bottom-16 left-1/2 transform -translate-x-1/2">Browser Packages</Link>
+          <Link to={"/services-all"} className="text-base leading-none text-center font-Montserrat font-medium bg-black transition-all duration-300 block mx-auto py-4 px-12 text-white rounded-full absolute bottom-16 left-1/2 transform -translate-x-1/2">Browser Packages</Link>
         </div>
       </section>
 
@@ -218,31 +255,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* <section className="home-sample-music relative z-10 mb-24 px-5 md:px-10 xl:px-0">
-        <picture>
-          <source srcSet={GreenShadowBG} type="image/webp" />
-          <img src={GreenShadowBG} className='absolute left-0 -bottom-[200%] pointer-events-none' alt="Green Shadow Background" />
-        </picture>
-        <div className="max-w-[1110px] mx-auto">
-          <h2 className="font-THICCCBOI-Medium font-medium text-[40px] leading-[50px] mb-7">What Are the Risks of Not Using Professional Online Mixing and Mastering Services?</h2>
-          <div className='flex flex-col-reverse lg:flex-row items-stretch gap-8'>
-            <div className="w-full lg:w-1/2 flex flex-col justify-between items-stretch gap-5 lg:gap-0">
-              <div className="flex flex-col justify-between items-stretch gap-8">
-                <p className="font-Roboto text-base md:text-base font-normal leading-6 text-center lg:text-left">
-                  Professional mixing and mastering services are an essential component of any musician’s career, whether they are just starting out in a garage or selling multimillion-dollar albums. Without expert mixing services and complete control over the listener’s experience, you risk appearing unprofessional and jeopardizing the integrity of your music. However, you have options if you want to know how to acquire the finest potential outcomes for your music. It is entirely up to you whether you want to take the chance that your music will not sound as it should or hire Online music mastering service professional. Seriously, while determining where you want to save money, keep your future in mind. We would strongly recommend hiring us to do your job if you desire high-quality sound. You can hear why we are the best in the world by listening to our before and after samples below.
-                </p>
-              </div>
-            </div>
-            <div className="w-full lg:w-1/2 flex flex-col gap-5">
-              <picture>
-                <source srcSet={SampleBanner} type="image/webp" />
-                <img src={SampleBanner} className="w-full rounded-xl h-full object-fill" alt="Sample Banner" />
-              </picture>
-            </div>
-          </div>
-        </div>
-      </section> */}
 
       <section className="artist-slider relative z-20 mb-24 px-5 md:px-10 xl:px-0">
         <picture>
