@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { FolderIcon, LinkIcon } from '@heroicons/react/24/outline';
+import { LinkIcon } from '@heroicons/react/24/outline';
 import axios from "axios";
 import { Slide, toast } from "react-toastify";
 import { API_ENDPOINT } from "../utils/constants";
@@ -10,22 +10,13 @@ import PurpleShadowBG from "../assets/images/purple-shadow-bg.webp";
 import GreenShadowBG from "../assets/images/green-shadow-bg.webp";
 
 const Upload = () => {
-    const [isFileUpload, setIsFileUpload] = useState(false);
-
-    const { register, reset, handleSubmit, formState: { errors, isSubmitting }, clearErrors } = useForm();
+    const { register, reset, handleSubmit, formState: { errors, isSubmitting } } = useForm();
 
     const onSubmit = async (data) => {
         const formData = new FormData();
 
         formData.append("email", data.email);
-        if (isFileUpload) {
-            // Append each file to the formData
-            for (let i = 0; i < data.audio.length; i++) {
-                formData.append("image_file[]", data.audio[i]);
-            }
-        } else {
-            formData.append("image_url", data.audio);
-        }
+        formData.append("image_url", data.audio);
         formData.append("name", data.name);
         formData.append("arlist_name", data.arlist_name);
         formData.append("tarck_title", data.tarck_title);
@@ -72,22 +63,6 @@ const Upload = () => {
                 transition: Slide,
             });
         }
-    };
-
-    const toggleInputMode = () => {
-        setIsFileUpload(!isFileUpload);
-        clearErrors("audio"); // Clear audio errors when toggling between modes
-    };
-
-    const validateAudioFile = (files) => {
-        if (files && files.length > 0) {
-            for (let i = 0; i < files.length; i++) {
-                if (!files[i].type.startsWith('audio/')) {
-                    return 'All files must be audio files';
-                }
-            }
-        }
-        return true;
     };
 
     const validateAudioLink = (url) => {
@@ -182,37 +157,16 @@ const Upload = () => {
                                         {errors.tarck_title && <span className="text-red-500">{errors.tarck_title.message}</span>}
                                     </div>
                                 </div>
-                                <div className="w-full flex items-stretch gap-5">
-                                    {isFileUpload ? (
-                                        <input
-                                            type="file"
-                                            autoComplete="off"
-                                            accept="audio/*"
-                                            multiple
-                                            className="w-full px-[15px] py-[10px] bg-[#171717] text-white rounded-[10px] focus:outline-none focus:ring-2 focus:ring-green-500"
-                                            {...register('audio', {
-                                                required: "File is required",
-                                                validate: validateAudioFile,
-                                            })}
-                                        />
-                                    ) : (
-                                        <input
-                                            type="text"
-                                            autoComplete="off"
-                                            placeholder="Paste file link here."
-                                            className="w-full p-[15px] bg-[#171717] text-white text-base leading-4 font-Roboto font-normal rounded-[10px] focus:outline-none focus:ring-2 focus:ring-green-500"
-                                            {...register('audio', { required: "File link is required", validate: validateAudioLink })}
-                                        />
-                                    )}
-                                    <button
-                                        type="button"
-                                        className="bg-[#171717] text-white p-3 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-green-500"
-                                        onClick={toggleInputMode}
-                                    >
-                                        {isFileUpload ? <LinkIcon width={20} height={20} /> : <FolderIcon width={20} height={20} />}
-                                    </button>
+                                <div className="w-full">
+                                    <input
+                                        type="text"
+                                        autoComplete="off"
+                                        placeholder="Paste WeTransfer/ Google Drive or Dropbox link here..."
+                                        className="w-full p-[15px] bg-[#171717] text-white text-base leading-4 font-Roboto font-normal rounded-[10px] focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        {...register('audio', { required: "File link is required", validate: validateAudioLink })}
+                                    />
+                                    {errors.audio && <span className="text-red-500">{errors.audio.message}</span>}
                                 </div>
-                                {errors.audio && <span className="text-red-500">{errors.audio.message}</span>}
                                 <div className="w-full">
                                     <select
                                         className="w-full p-[15px] bg-[#171717] text-white text-base leading-4 font-Roboto font-normal rounded-[10px] focus:outline-none focus:ring-2 focus:ring-green-500"

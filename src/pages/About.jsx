@@ -15,6 +15,8 @@ import Reviewsio from "../assets/images/reviewsio.jpg";
 import Siteja from "../assets/images/siteja.jpg";
 import PurpleShadowBG from "../assets/images/purple-shadow-bg.webp";
 import GreenShadowBG from "../assets/images/green-shadow-bg.webp";
+import MixingMasterigService from "../assets/images/product-detail.png";
+import WhiteLogo from "../assets/images/logo-white.png";
 
 const About = () => {
     const [galleryImages, setGalleryImages] = useState([]);
@@ -112,12 +114,13 @@ const About = () => {
             <section className=" bg-[#0B1306] relative top-0 z-20 py-12 mb-24 text-white px-5 md:px-10 xl:px-0">
                 <div className="max-w-[1110px] mx-auto">
                     <h2 className="font-THICCCBOI-Medium text-[40px] leading-[50px] font-medium mb-8">We help artists accomplish their dreams.</h2>
-                    <div className="flex flex-col md:flex-row items-stretch gap-10">
-                        <div className="w-full md:w-1/2 lg:w-2/5">
+                    <div className="flex flex-col md:flex-row items-center gap-10">
+                        <div className="w-full md:w-1/2 lg:w-2/5 relative">
                             <picture>
-                                <source srcSet={AboutService} type="image/webp" />
-                                <img src={AboutService} className="w-full h-full rounded-xl object-cover" alt="About Service Photo" />
+                                <source srcSet={MixingMasterigService} type="image/webp" />
+                                <img src={MixingMasterigService} className='w-full h-full object-cover rounded-xl' alt="About Service Photo" />
                             </picture>
+                            <img src={WhiteLogo} alt="White Logo" className="absolute left-4 bottom-4 w-20 h-auto z-10" />
                         </div>
                         <div className="w-full md:w-1/2 lg:w-3/5">
                             <p className="font-DMSANS font-normal text-base">We help artists accomplish their dreams. At Audio Mixing Mastering
