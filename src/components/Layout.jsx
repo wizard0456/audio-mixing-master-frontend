@@ -87,14 +87,14 @@ const Layout = () => {
         userInfo ?
           <LiveChatWidget
             license="1816872"
-            visibility="maximized"
+            visibility="minimized"
             customerName={`${userInfo ? userInfo.first_name : ''}`}
             customerEmail={`${userInfo ? userInfo.email : ''}`}
           />
           :
           <LiveChatWidget
             license="1816872"
-            visibility="maximized"
+            visibility="minimized"
           />
       }
     </>

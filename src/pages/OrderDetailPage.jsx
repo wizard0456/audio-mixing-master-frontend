@@ -290,19 +290,56 @@ const OrderDetailPage = () => {
                                                                     <div className={`flex items-center justify-between bg-black text-white relative mb-5`}>
                                                                         <h2 className="font-THICCCBOI-Bold text-[18px] leading-[22px]">Delivery Files ({JSON.parse(item.deliverable_files).length})</h2>
                                                                     </div>
-                                                                    <div className="flex flex-col gap-5">
-                                                                        {JSON.parse(item?.deliverable_files).map((file, idx) => (
-                                                                            <div key={idx} className="bg-gray-800 rounded-[20px]">
-                                                                                <audio
-                                                                                    controls
-                                                                                    className="w-full h-10 rounded-lg"
-                                                                                    onPlay={(e) => handlePlay(e.target)} // Handle play event to ensure only one plays at a time
-                                                                                >
-                                                                                    <source src={`${DOMAIN}${file}`} type="audio/mpeg" />
-                                                                                    Your browser does not support the audio element.
-                                                                                </audio>
-                                                                            </div>
-                                                                        ))}
+                                                                    <div className="flex flex-col gap-3">
+                                                                        {JSON.parse(item?.deliverable_files).map((file, idx) => {
+                                                                            const isExternalLink = file.startsWith('http://') || file.startsWith('https://');
+                                                                            const fileName = `Delivery File ${idx + 1}`;
+                                                                            
+                                                                            // Detect cloud service type
+                                                                            const getCloudService = (url) => {
+                                                                                if (url.includes('drive.google.com') || url.includes('docs.google.com')) return 'Google Drive';
+                                                                                if (url.includes('dropbox.com')) return 'Dropbox';
+                                                                                if (url.includes('onedrive.live.com') || url.includes('1drv.ms')) return 'OneDrive';
+                                                                                if (url.includes('icloud.com')) return 'iCloud';
+                                                                                if (url.includes('mega.nz')) return 'MEGA';
+                                                                                if (url.includes('box.com')) return 'Box';
+                                                                                return 'Cloud Storage';
+                                                                            };
+
+                                                                            const cloudService = isExternalLink ? getCloudService(file) : 'External Link';
+                                                                            
+                                                                            return (
+                                                                                <div key={idx} className="bg-gray-800 rounded-[15px] p-4 flex items-center justify-between">
+                                                                                    <div className="flex items-center gap-3">
+                                                                                        <div className="bg-[#4CC800] rounded-full p-2">
+                                                                                            <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                                                                                <path fillRule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clipRule="evenodd" />
+                                                                                            </svg>
+                                                                                        </div>
+                                                                                        <div>
+                                                                                            <p className="font-THICCCBOI-Medium text-white text-sm">{fileName}</p>
+                                                                                            <p className="font-THICCCBOI-Regular text-gray-400 text-xs">
+                                                                                                <span className="flex items-center gap-1">
+                                                                                                    <span className="inline-block w-2 h-2 bg-[#4CC800] rounded-full"></span>
+                                                                                                    {cloudService}
+                                                                                                </span>
+                                                                                            </p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <a
+                                                                                        href={file}
+                                                                                        target="_blank"
+                                                                                        rel="noopener noreferrer"
+                                                                                        className="bg-[#4CC800] hover:bg-[#3DA600] text-white font-THICCCBOI-Medium text-sm px-4 py-2 rounded-[8px] transition-colors duration-200 flex items-center gap-2"
+                                                                                    >
+                                                                                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                                                            <path fillRule="evenodd" d="M18 10.5l-4.5-4.5v3h-9v3h9v3l4.5-4.5z" clipRule="evenodd" />
+                                                                                        </svg>
+                                                                                        Open
+                                                                                    </a>
+                                                                                </div>
+                                                                            );
+                                                                        })}
                                                                     </div>
                                                                 </div>
                                                             )}
