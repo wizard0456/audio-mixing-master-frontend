@@ -2,7 +2,11 @@ export const API_ENDPOINT = "https://music.zetdigi.com/backend/public/api/";
 export const DOMAIN = "https://music.zetdigi.com/backend/public/"
 // export const API_ENDPOINT = "https://backend.zetdigitesting.online/api/";
 // export const DOMAIN = "https://backend.zetdigitesting.online/"
-export const itemsPerPage = 12
+
+export const itemsPerPage = 10;
+
+// export const API_ENDPOINT = "https://backend.audiomixingmastering.com/api/";
+// export const DOMAIN = "https://backend.audiomixingmastering.com/";
 
 export const ORDER_STATUS = {
     0: { name: 'Pending', color: '#186df5' },

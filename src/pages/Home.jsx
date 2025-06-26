@@ -10,7 +10,7 @@ import { Slide, toast } from 'react-toastify';
 import WaveformAudioPlayer from '../components/WaveformAudioPlayer';
 
 // Import utils
-import { API_ENDPOINT, DOMAIN } from "../utils/constants";
+import { API_ENDPOINT } from "../utils/constants";
 
 // Import assets
 import BenefitsVideoImage from "../assets/images/home-1.webp";
@@ -33,32 +33,12 @@ import Artist8 from "../assets/images/artist-8.webp";
 import Artist9 from "../assets/images/artist-9.webp";
 import Artist10 from "../assets/images/artist-10.webp";
 import SampleBanner from "../assets/images/home-2.webp";
-import MixingMasterigService from "../assets/images/product-detail.png";
+import MixingMasterigService from "../assets/images/mixing-mastering-service.webp";
 import Home1 from "../assets/images/home1.webp";
-import StarBoldIcon from "../assets/images/star-bold-icon.png"
-import MonthlySubBanner from "../assets/images/montly-subscription-banner.png" 
-import WhiteLogo from "../assets/images/logo-white.png";
-import AudioPlayer from '../components/AudioPlayer';
 
 export default function Home() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false); // State for loading
-  const [samples, setSamples] = useState([]);
-  const [samplesLoading, setSamplesLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchTopSamples() {
-      try {
-        const response = await axios.get(`${API_ENDPOINT}sample-audios?per_page=3&page=1`);
-        setSamples(response.data.data);
-        setSamplesLoading(false);
-      } catch (error) {
-        console.error("Error fetching samples:", error);
-        setSamplesLoading(false);
-      }
-    }
-    fetchTopSamples();
-  }, []);
 
   const handleEmailSubmit = async (event) => {
     event.preventDefault();
@@ -121,7 +101,7 @@ export default function Home() {
         <div className="max-w-[1110px] mx-auto flex flex-col gap-8 relative z-10">
           <h1 className="text-white font-THICCCBOI-ExtraBold text-[40px] sm:text-[50px] font-bold lg:text-[60px] leading-tight xl:font-extrabold xl:text-[70px] xl:leading-[80px] text-center">Professional Online <br className="hidden xl:block" /> Mixing and Mastering Services At <br className="hidden xl:block" /> A Very Affordable Price!</h1>
           <WaveformAudioPlayer />
-          <Link to={"/samples"} className="text-base leading-none text-center font-Montserrat font-medium primary-gradient transition-all duration-300 ease-in-out active:scale-95 block mx-auto py-4 px-12 text-white rounded-full mt-8">Get Started</Link>
+          <Link to={"/samples"} className="text-base leading-none text-center font-Montserrat font-medium primary-gradient transition-all duration-300 ease-in-out active:scale-95 block mx-auto py-4 px-12 text-white rounded-full mt-8">More Samples</Link>
         </div>
       </section>
 
@@ -134,32 +114,34 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="banefits-content relative mb-24 bg-[#0B1306] px-5 md:px-10 xl:px-0">
+      <section className="banefits-content relative mb-24 bg-[#0B1306] sm:rounded-[30px] px-5 md:px-10 xl:px-0">
         <div className="max-w-[1110px] relative z-20 mx-auto py-9">
           <h2 className="font-THICCCBOI-Medium font-medium text-[40px] leading-[50px] mb-7">What Are the Benefits of Using Online Mixing and Mastering Services?</h2>
-          <div className='flex flex-col-reverse items-stretch gap-8'>
-            <div className='w-full pr-5 flex flex-col gap-3'>
+          <div className='flex flex-col-reverse lg:flex-row items-stretch gap-8'>
+            <div className="w-full lg:w-1/2 flex flex-col gap-5">
+              <picture>
+                <source srcSet={Home1} type="image/webp" />
+                <img src={Home1} className="w-full rounded-xl h-full object-fill" alt="Benefits Video Image" />
+              </picture>
+            </div>
+            <div className='w-full lg:w-1/2 pr-5 flex flex-col gap-3'>
               <div className="flex items-center justify-start gap-3 ">
-                <img src={StarBoldIcon} alt="star-bold-icon.png" />
                 <p className="font-DMSANS font-normal text-base leading-6">The biggest benefit of using online mixing and mastering services is that you can save a lot of money and use the rest for things like marketing, video shoots, and promotion, all of which are expensive to begin.</p>
               </div>
+
               <div className="flex items-center justify-start gap-3 ">
-                <img src={StarBoldIcon} alt="star-bold-icon.png" />
                 <p className="font-DMSANS font-normal text-base leading-6">Mixing is essentially the process before mastering, and it entails integrating and modifying separate recordings to make a professional stereo mix. Next, the stereo file is mastered to ensure the music has been cleaned and framed into a powerful, radio-ready release smash hit.</p>
               </div>
 
               <div className="flex items-center justify-start gap-3 ">
-                <img src={StarBoldIcon} alt="star-bold-icon.png" />
                 <p className="font-DMSANS font-normal text-base leading-6">Musicians nowadays have easy access to recording software and gear. What is great about this rise in self-recording is that it allows independent musicians in the seclusion of their own homes to make multi-track recordings at their leisure.</p>
               </div>
 
               <div className="flex items-center justify-start gap-3 ">
-                <img src={StarBoldIcon} alt="star-bold-icon.png" />
-                <p className="font-DMSANS font-normal text-base leading-6">You may save money by hiring a mixing and mastering firm and putting the spare time and money to good use. Additionally, we offer Customer Service 24 hours a day, 7 days a week, right here on our website. Using our online chat technology, we can communicate swiftly and easily as we genuinely care about the end product's quality.</p>
+                <p className="font-DMSANS font-normal text-base leading-6">You may save money by hiring a mixing and mastering firm and putting the spare time and money to good use. Additionally, we offer Customer Service 24 hours a day, 7 days a week, right here on our website. Using our online chat technology, we can communicate swiftly and easily as we genuinely care about the end product’s quality.</p>
               </div>
 
               <div className="flex items-center justify-start gap-3 ">
-                <img src={StarBoldIcon} alt="star-bold-icon.png" />
                 <p className="font-DMSANS font-normal text-base leading-6">Before sending us your project, please examine our upload page and send the split tracks so that we can work on each one separately. Remember, we embrace all genres, so prepare your files and let us take your music to the next level!</p>
               </div>
             </div>
@@ -171,83 +153,51 @@ export default function Home() {
         </picture>
       </section>
 
-      <section className='samples-section relative z-10 mb-24 px-5 md:px-10 xl:px-0'>
-        <div className="max-w-[1110px] relative z-20 mx-auto py-9">
+      <section className="home-sample-music relative z-10 mb-24 px-5 md:px-10 xl:px-0">
+        <picture>
+          <source srcSet={GreenShadowBG} type="image/webp" />
+          <img src={GreenShadowBG} className='absolute left-0 -bottom-[200%] pointer-events-none' alt="Green Shadow Background" />
+        </picture>
+        <div className="max-w-[1110px] mx-auto">
+          <h2 className="font-THICCCBOI-Medium font-medium text-[40px] leading-[50px] mb-7">What Are the Risks of Not Using Professional Online Mixing and Mastering Services?</h2>
           <div className='flex flex-col-reverse lg:flex-row items-stretch gap-8'>
             <div className="w-full lg:w-1/2 flex flex-col justify-between items-stretch gap-5 lg:gap-0">
               <div className="flex flex-col justify-between items-stretch gap-8">
-                <h2 className='font-THICCCBOI-Medium font-medium text-[40px] leading-[50px] mb-7'>Before & After Samples</h2>
                 <p className="font-Roboto text-base md:text-base font-normal leading-6 text-center lg:text-left">
-                  If you are struggling to find the best mixing and mastering services for your next music release, then we’ve got you covered. Give a head start to your music career and let us help you get studio-quality mastered tracks. Our team of real hands-on engineers will fine-tune your songs to a radio-ready quality, so you can impress your listeners and boost your career like never before. Below you can listen to our before and after, mixing and mastering examples. This should give you a decent understanding of what mixing and mastering are and how they may assist you in creating a great song.
+                  Professional mixing and mastering services are an essential component of any musician’s career, whether they are just starting out in a garage or selling multimillion-dollar albums. Without expert mixing services and complete control over the listener’s experience, you risk appearing unprofessional and jeopardizing the integrity of your music. However, you have options if you want to know how to acquire the finest potential outcomes for your music. It is entirely up to you whether you want to take the chance that your music will not sound as it should or hire Online music mastering service professional. Seriously, while determining where you want to save money, keep your future in mind. We would strongly recommend hiring us to do your job if you desire high-quality sound. You can hear why we are the best in the world by listening to our before and after samples below.
                 </p>
               </div>
-              <Link to={"/samples"} className="text-base leading-none text-center font-Montserrat font-medium primary-gradient transition-all duration-300 ease-in-out active:scale-95 block mx-auto py-4 px-12 text-white rounded-full mt-8">More Examples</Link>
             </div>
             <div className="w-full lg:w-1/2 flex flex-col gap-5">
-              {samplesLoading ? (
-                <div className="flex flex-col gap-4">
-                  {[...Array(3)].map((_, index) => (
-                    <div key={index} className="w-full h-32 bg-gray-700 rounded-lg animate-pulse"></div>
-                  ))}
-                </div>
-              ) : (
-                <div className="flex flex-col gap-4">
-                  {samples.map((sample) => (
-                    <div key={sample.id} className="w-full">
-                      <AudioPlayer
-                        beforeAudioSrc={sample?.before_audio ? `${DOMAIN}${sample?.before_audio}` : ""}
-                        afterAudioSrc={sample?.after_audio ? `${DOMAIN}${sample?.after_audio}` : ""}
-                        beforeAudioName={sample?.name ? sample?.name : "Sample"}
-                        afterAudioName={sample?.name ? sample?.name : "Sample"}
-                        id={sample?.id.toString()}
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
+              <picture>
+                <source srcSet={SampleBanner} type="image/webp" />
+                <img src={SampleBanner} className="w-full rounded-xl h-full object-fill" alt="Sample Banner" />
+              </picture>
             </div>
           </div>
         </div>
-      </section>
-
-      <section className='samples-section relative z-10 mb-24 px-5 md:px-10 xl:px-0'>
-        <div className="max-w-[1110px] relative z-20 mx-auto py-9">
-          <picture>
-            <source srcSet={MonthlySubBanner} type='image/png' />
-            <img src={MonthlySubBanner} alt="MonthlySubBanner" />
-          </picture>
-          <Link to={"/services-all"} className="text-base leading-none text-center font-Montserrat font-medium bg-black transition-all duration-300 block mx-auto py-4 px-12 text-white rounded-full absolute bottom-16 left-1/2 transform -translate-x-1/2">Browser Packages</Link>
-        </div>
-      </section>
+      </section >
 
       <section className="about-sevice relative z-20 bg-[#0B1306] py-12 mb-24 px-5 md:px-10 xl:px-0">
-        <picture>
-          <source srcSet={GreenShadowBG} type="image/webp" />
-          <img src={GreenShadowBG} className='absolute left-0 bottom-1/4 pointer-events-none' alt="Green Shadow" />
-        </picture>
         <div className="max-w-[1110px] mx-auto">
           <h2 className="font-THICCCBOI-Medium text-[40px] leading-[50px] font-medium mb-8 text-center md:text-left">Mixing and Mastering Services</h2>
           <div className="flex flex-col md:flex-row items-stretch gap-10 relative z-20 overflow-hidden">
-            <div className="w-full md:w-1/2 lg:w-2/5 relative">
+            <div className="w-full md:w-1/2 lg:w-2/5">
               <picture>
                 <source srcSet={MixingMasterigService} type="image/webp" />
                 <img src={MixingMasterigService} className='w-full h-full object-cover rounded-xl' alt="About Service Photo" />
               </picture>
-              <img src={WhiteLogo} alt="White Logo" className="absolute left-4 bottom-4 w-20 h-auto z-10" />
             </div>
             <div className="w-full md:w-1/2 lg:w-3/5">
               <div className="flex items-center justify-start gap-3 py-3">
-                <img src={StarBoldIcon} alt="star-bold-icon.png" />
                 <p className="font-DMSANS font-normal text-base leading-6">The music industry is one of the most competitive in the world. Mixing and mastering services are essential for any artist or recording team that is looking to achieve success in their career. From vocal to instrumental, mixing and mastering services are needed to ensure that the final product sounds professional and polished. With accurate mixing and mastering, artists can plan their releases and submit their songs to record labels much easier.</p>
               </div>
 
               <div className="flex items-center justify-start gap-3 py-3">
-                <img src={StarBoldIcon} alt="star-bold-icon.png" />
                 <p className="font-DMSANS font-normal text-base leading-6">What is Mixing and Mastering Service? Mixing is the term commonly used to refer to the process of taking an audio track and cleaning it solidly using advance techniques.</p>
               </div>
 
               <div className="flex items-center justify-start gap-3 py-3">
-                <img src={StarBoldIcon} alt="star-bold-icon.png" />
                 <p className="font-DMSANS font-normal text-base leading-6">Mastering is the final polish in audio production, which involves enhancing the overall sound, creating consistency, making the song sound professional and radio ready.</p>
               </div>
               <Link to={"/about"} className="text-base leading-none text-center font-Montserrat w-fit font-medium primary-gradient transition-all duration-300 ease-in-out active:scale-95 block py-4 px-12 text-white rounded-full mt-4 ms-auto md:ms-0 me-auto">Learn More</Link>
@@ -289,7 +239,7 @@ export default function Home() {
               <h2 className="font-THICCCBOI-Medium text-[40px] leading-[50px] font-medium text-center md:text-left">Get In Touch</h2>
               <h3 className="font-Roboto font-normal text-2xl text-[#17A84E] text-center md:text-left mt-5 md:mt-0">We&rsquo;d love to hear from you</h3>
             </div>
-            <img src={WhiteLogo} className="w-24 md:ms-0 ms-auto me-auto" alt="Logo" />
+            <img src={LOGO} className="w-24 md:ms-0 ms-auto me-auto" alt="Logo" />
           </div>
 
           <div className="w-full md:w-1/2 flex flex-col items-end gap-6">
@@ -297,7 +247,7 @@ export default function Home() {
               <div className="bg-white h-[66px] w-[66px] rounded-[5px] flex items-center justify-center">
                 <PaperAirplaneIcon color="#17A84E" className="-rotate-45 w-10" />
               </div>
-              <div className="w-full sm:w-60 md:flex-grow-1">
+              <div className="w-full sm:w-60 text-center md:flex-grow-1">
                 <a href="mailto:support@audiomixingmastering.com" className="block font-Roboto font-normal text-base leading-6">support@audiomixingmastering.com</a>
                 <a href="" className="block">www.audiomixingmastering.com</a>
               </div>
@@ -306,7 +256,7 @@ export default function Home() {
               <div className="bg-white h-[66px] w-[66px] rounded-[5px] flex items-center justify-center">
                 <PhoneIcon color="#17A84E" className="w-10" />
               </div>
-              <div className="w-full sm:w-60 md:flex-grow-1">
+              <div className="w-full sm:w-60 text-center md:flex-grow-1">
                 <a href="https://wa.link/rvvpjm" target='_blank' rel="noreferrer" className="block font-Roboto font-normal text-base leading-6">Whatsapp: +31634038672</a>
                 <a href="" className="block">www.audiomixingmastering.com</a>
               </div>
@@ -315,7 +265,7 @@ export default function Home() {
               <div className="bg-white h-[66px] w-[66px] rounded-[5px] flex items-center justify-center">
                 <MapPinIcon color="#17A84E" className="w-10" />
               </div>
-              <div className="w-full sm:w-60 md:flex-grow-1">
+              <div className="w-full sm:w-60 text-center md:flex-grow-1">
                 <a href='https://maps.app.goo.gl/ovDJJ63eU7v7Az6E9' target='_blank' rel="noreferrer" className="block font-Roboto font-normal text-base leading-6">Audio Mixing Mastering <br /> Tesselschadestraat 27,<br /> Leeuwarden, Netherlands</a>
               </div>
             </div>
@@ -352,7 +302,7 @@ export default function Home() {
         <div className="max-w-[1110px] relative z-20 mx-auto flex flex-col items-center justify-center gap-16 rounded-[30px]">
           <div className="flex flex-col items-center justify-center gap-3">
             <h4 className="font-Roboto font-normal text-[18px] leading-7 text-center text-[#17A84E]">Enter Email to Receive 10% Voucher</h4>
-            <h1 className="font-THICCCBOI text-[30px] sm:text-[40px] leading-tight lg:text-[50px] lg:leading-[70px] font-medium text-center">Join our mailing list & <span className="font-black">Receive a 10%</span> <br /> Off coupon code!</h1>
+            <h1 className="font-THICCCBOI text-[30px] sm:text-[40px] leading-tight lg:text-[50px] lg:leading-[70px] font-medium text-center">Join our mailing list & <span className="font-black">Receive a 10%</span> Off coupon code!</h1>
           </div>
 
           <form onSubmit={handleEmailSubmit} className="w-full max-w-[534px] h-[70px] relative top-0 rounded-[38px]">
@@ -472,10 +422,10 @@ function CreditsSlider() {
   const [isDragging, setIsDragging] = useState(false);
 
   const settings = {
-    dots: false,
+    dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 5,
+    slidesToShow: 4,
     slidesToScroll: 1,
     swipeToSlide: true,
     autoplay: true,

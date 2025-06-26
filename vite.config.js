@@ -6,10 +6,9 @@ export default defineConfig({
     host: true,
     port: 5173, // or any other port
   },
-  base: '/',
   // base: 'https://check.zetdigi.com/',
   // base: 'https://zetdigitesting.online/',
-  // base: 'https://audiomixingmastering.com/',
+  base: 'https://audiomixingmastering.com/',
   plugins: [react()],
   optimizeDeps: {
     include: ['react-redux', "react-topbar-progress-indicator"],
