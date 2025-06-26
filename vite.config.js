@@ -8,7 +8,8 @@ export default defineConfig({
   },
   // base: 'https://check.zetdigi.com/',
   // base: 'https://zetdigitesting.online/',
-  base: 'https://audiomixingmastering.com/',
+  // base: 'https://audiomixingmastering.com/',
+  base: '/',
   plugins: [react()],
   optimizeDeps: {
     include: ['react-redux', "react-topbar-progress-indicator"],
