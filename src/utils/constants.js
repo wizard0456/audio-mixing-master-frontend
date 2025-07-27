@@ -1,8 +1,8 @@
 // export const API_ENDPOINT = "https://music.zetdigi.com/backend/public/api/";
 // export const DOMAIN = "https://music.zetdigi.com/backend/public/"
 
-export const API_ENDPOINT = "https://audio-mixing-master-backend-node-ocgg.onrender.com/backend/public/api/";
-export const DOMAIN = "https://audio-mixing-master-backend-node-ocgg.onrender.com/backend/public/"
+export const API_ENDPOINT = "https://audio-mixing-master-backend-node-ocgg.onrender.com/api/";
+export const DOMAIN = "https://audio-mixing-master-backend-node-ocgg.onrender.com/"
 // export const API_ENDPOINT = "https://backend.zetdigitesting.online/api/";
 // export const DOMAIN = "https://backend.zetdigitesting.online/"
 
