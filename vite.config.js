@@ -6,11 +6,12 @@ export default defineConfig({
     host: true,
     port: 5173, // or any other port
     proxy: {
-      // Proxy API requests
+      // Proxy API requests to your backend
       '/api': {
-        target: '/', 
+        target: 'http://127.0.0.1:3000', 
         changeOrigin: true,
         secure: false,
+        rewrite: (path) => path.replace(/^\/api/, '/api'),
       },
     },
   },

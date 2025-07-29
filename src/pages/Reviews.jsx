@@ -22,8 +22,7 @@ export default function Reviews() {
                 const response = await axios.get(API_ENDPOINT + 'testimonial-list');
                 setReviews(response.data);
             } catch (err) {
-                setError('Failed to load testimonials');
-                console.error('Error fetching testimonials:', err);
+                // Handle error silently
             } finally {
                 setLoading(false);
             }

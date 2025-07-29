@@ -44,8 +44,7 @@ export default function Faq() {
                 setCategories(categoryList);
                 setActiveCategory(categoryList[0]);
             } catch (err) {
-                setError('Failed to load FAQs.');
-                console.error('Error fetching FAQs:', err);
+                // Handle error silently
             } finally {
                 setLoading(false);
             }

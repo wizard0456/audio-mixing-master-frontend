@@ -1,15 +1,18 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { Link, useParams, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useParams, useLocation, useNavigate } from 'react-router-dom';
 import GreenShadowBG from "../assets/images/green-shadow-bg.webp";
 import PurpleShadowBG from "../assets/images/purple-shadow-bg.webp";
 import { clearCart } from '../reducers/cartSlice';
+import { selectUser } from '../reducers/authSlice';
 import { CheckIcon } from '@heroicons/react/24/outline';
 
 const OrderConfirmation = () => {
     const { orderId } = useParams();
     const location = useLocation();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const user = useSelector(selectUser);
 
     const cartItems = location.state?.cartItems || []; // Retrieve cart items from location state
     const finalTotal = isNaN(parseFloat(location.state?.total)) ? 0 : parseFloat(location.state?.total); // Ensure finalTotal is a number
@@ -17,12 +20,23 @@ const OrderConfirmation = () => {
     const discountAmount = isNaN(parseFloat(location.state?.discountAmount)) ? 0 : parseFloat(location.state?.discountAmount); // Ensure discountAmount is a number
     const isGiftCard = location.isGiftCard;
 
-    console.log(cartItems)
+    // Check if user is a guest (not logged in)
+    const isGuestUser = !user;
 
     useEffect(() => {
         if (cartItems[0].service_type == "subscription" || !isGiftCard) return;
         dispatch(clearCart()); // Clear the cart items when this component mounts
     }, [dispatch]);
+
+    const handleSignUpRedirect = () => {
+        navigate('/signup', { 
+            state: { 
+                fromOrderConfirmation: true,
+                orderId: orderId,
+                guestInfo: location.state?.guestInfo || null
+            } 
+        });
+    };
 
     return (
         <section className="text-white relative z-30 mt-24 mb-36 px-5 md:px-10 xl:px-0">
@@ -67,9 +81,51 @@ const OrderConfirmation = () => {
                             <p>Loading order details...</p>
                         )}
                     </div>
-                    <Link to="/account" className="font-Montserrat font-medium text-base leading-5 primary-gradient transition-all duration-300 ease-in-out active:scale-95 mt-3 block w-fit mx-auto px-6 py-4 rounded-full">
-                        Go to My Account
-                    </Link>
+                    
+                    {/* Show different content based on user type */}
+                    {isGuestUser ? (
+                        <div className="space-y-4">
+                            <div className="bg-[#1a1a1a] rounded-[15px] p-6 border border-[#4CC800]">
+                                <h3 className="font-THICCCBOI-SemiBold text-xl mb-3 text-[#4CC800]">
+                                    🎯 Track Your Order
+                                </h3>
+                                <p className="font-Roboto font-normal text-base leading-6 mb-4 text-gray-300">
+                                    Create an account to track your order progress, receive updates, and manage your future orders easily.
+                                </p>
+                                <div className="space-y-3 text-sm text-gray-400">
+                                    <div className="flex items-center gap-2">
+                                        <span className="w-2 h-2 bg-[#4CC800] rounded-full"></span>
+                                        <span>Real-time order status updates</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="w-2 h-2 bg-[#4CC800] rounded-full"></span>
+                                        <span>Download your completed files</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="w-2 h-2 bg-[#4CC800] rounded-full"></span>
+                                        <span>Request revisions and communicate</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="w-2 h-2 bg-[#4CC800] rounded-full"></span>
+                                        <span>Access order history and invoices</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button 
+                                onClick={handleSignUpRedirect}
+                                className="font-Montserrat font-medium text-base leading-5 primary-gradient transition-all duration-300 ease-in-out active:scale-95 px-8 py-4 rounded-full w-full"
+                            >
+                                Create Account to Track Order
+                            </button>
+                            <p className="text-gray-400 text-sm">
+                                Already have an account? <Link to="/login" className="text-[#4CC800] hover:underline">Sign in here</Link>
+                            </p>
+                        </div>
+                    ) : (
+                        <Link to="/account" className="font-Montserrat font-medium text-base leading-5 primary-gradient transition-all duration-300 ease-in-out active:scale-95 mt-3 block w-fit mx-auto px-6 py-4 rounded-full">
+                            Go to My Account
+                        </Link>
+                    )}
                 </div>
             </div>
         </section>

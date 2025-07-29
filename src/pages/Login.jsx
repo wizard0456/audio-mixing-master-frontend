@@ -46,8 +46,9 @@ const Login = () => {
                 role: "user"
             });
 
-            if (!data.status == 200) {
-                throw new Error(data.data.error);
+            // Check if the response has the expected structure
+            if (data.data && data.data.success === false) {
+                throw new Error(data.data.message || 'Login failed');
             }
 
             toast.success("Login successful", {
@@ -62,14 +63,30 @@ const Login = () => {
                 transition: Slide,
             });
 
-            dispatch(addUser(data.data.token));
+            // Store the full user object with token, id, role, permissions
+            // Check if the response has nested data or is direct user data
+            
+            let userDataToStore;
+            if (data.data && data.data.data && data.data.data.token) {
+                // Response has double nested structure: { data: { success: true, data: { token, id, role, permissions } } }
+                userDataToStore = data.data.data;
+            } else if (data.data && data.data.token) {
+                // Response has nested structure: { data: { token, id, role, permissions } }
+                userDataToStore = data.data;
+            } else if (data.token) {
+                // Response is direct user data: { token, id, role, permissions }
+                userDataToStore = data;
+            } else {
+                throw new Error('Invalid response structure');
+            }
+            
+            dispatch(addUser(userDataToStore));
             reset();
 
             const redirectPath = sessionStorage.getItem('previousPage') || '/account';
             navigate(redirectPath, { replace: true });
-
         } catch (error) {
-            toast.error(error.response?.data?.error || error.message, {
+            toast.error(error.response?.data?.error, {
                 position: "top-center",
                 autoClose: 10000,
                 hideProgressBar: true,

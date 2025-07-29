@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { logout, selectUser } from "../reducers/authSlice";
+import { logout, selectUser, getUserToken } from "../reducers/authSlice";
 import { clearUser, selectUserInfo } from "../reducers/userSlice";
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
@@ -55,18 +55,22 @@ const Account = () => {
         // Fetch orders from the API
         const fetchOrders = async () => {
             try {
+                const token = getUserToken(user);
+                
                 const response = await axios(API_ENDPOINT + "orders?page=1&per_page=1",
                     {
                         headers: {
                             'Content-Type': 'application/json',
                             'Accept': 'application/json',
-                            'Authorization': `Bearer ${user}`
+                            'Authorization': `Bearer ${token}`
                         }
                     }
                 );
-                setOrders(response.data.data); // Assuming the API response has a data field containing orders
+                // Ensure orders is always an array
+                const ordersData = response.data?.data.orders || [];
+                setOrders(Array.isArray(ordersData) ? ordersData : []);
             } catch (error) {
-                console.error("Failed to fetch orders:", error);
+                // Handle error silently
             } finally {
                 setLoadingOrders(false);
             }
@@ -92,7 +96,7 @@ const Account = () => {
                             Account
                         </h1>
                         <p className="font-Roboto font-normal text-base leading-6">
-                            <Link to="/services">Services</Link> /{" "}
+                            <Link to="/select-services">Services</Link> /{" "}
                             <span className="text-[#4CC800] font-semibold">Account</span>
                         </p>
                     </div>
@@ -166,7 +170,7 @@ const Account = () => {
                                         ) : (
                                             <>
                                                 <h4 className="font-THICCCBOI-Bold text-[22px] leading-6">
-                                                    {userInfo?.first_name + " " + userInfo?.last_name}
+                                                    {userInfo.first_name + " " + userInfo?.last_name}
                                                 </h4>
                                                 <p className="font-Roboto font-normal text-base leading-5">
                                                     {userInfo?.email}
@@ -219,7 +223,7 @@ const Account = () => {
                         <div className="flex flex-col items-stretch justify-center gap-7 flex-grow">
                             {loadingOrders ? (
                                 <Loader />
-                            ) : orders.length == 0 ? (
+                            ) : !Array.isArray(orders) || orders.length == 0 ? (
                                 <h2 className="font-THICCCBOI-Bold text-[20px] py-4 leading-[50px] text-center flex items-center justify-center bg-black rounded-[20px] h-full">No Orders</h2>
                             ) : (
                                 orders.map((order) => (
@@ -255,7 +259,7 @@ const Account = () => {
                                 ))
                             )}
                         </div>
-                        {orders.length > 0 && (
+                        {Array.isArray(orders) && orders.length > 0 && (
                             <Link to="/orders" className="w-full font-Montserrat font-medium text-base leading-5 primary-gradient px-6 py-4 text-center rounded-[20px] transition-all duration-300 ease-in-out active:scale-95">
                                 Clik Here To See All Orders
                             </Link>

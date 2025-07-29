@@ -40,18 +40,18 @@ const Contact = () => {
                 transition: Slide,
             })
         } catch (error) {
-            console.log(error.response.data.message);
-            toast.error(error.response.data.message, {
+            toast.error(error.response?.data?.message || "Message failed to send", {
                 position: "top-center",
                 autoClose: 3000,
                 hideProgressBar: true,
                 closeOnClick: true,
-                pauseOnHover: false,
-                draggable: false,
+                pauseOnHover: true,
+                draggable: true,
                 progress: undefined,
-                theme: "light",
-                transition: Slide,
-            })
+                transition: Slide
+            });
+        } finally {
+            // setIsLoading(false); // This line was not in the new_code, so it's removed.
         }
     };
 

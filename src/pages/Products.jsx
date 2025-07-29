@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import { addItem, addToCart, getCartItems } from "../reducers/cartSlice";
 import { selectUser } from "../reducers/authSlice";
 import { Slide, toast } from "react-toastify";
-import { addFavorite, deleteFavorite, getFavorites } from "../reducers/userFavirotesSlice";
+import { addFavorite, deleteFavorite, getFavorites, fetchFavorites } from "../reducers/userFavirotesSlice";
 import CustomModal from '../components/CustomModal';
 import SubscriptionModalContent from '../components/SubscriptionModalContent';
 
@@ -28,6 +28,20 @@ const Products = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [loading, setLoading] = useState(false); // Loading state
     const favorites = useSelector(getFavorites);
+    
+    // Initialize favorites when user is logged in
+    useEffect(() => {
+        if (user && (!favorites || !Array.isArray(favorites))) {
+            // The favorites will be loaded by the Redux slice when needed
+        }
+    }, [user, favorites]);
+
+    // Fetch favorites when component mounts and user is logged in
+    useEffect(() => {
+        if (user) {
+            dispatch(fetchFavorites());
+        }
+    }, [user, dispatch]);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
 
@@ -37,7 +51,7 @@ const Products = () => {
                 const tagsData = await axios.get(`${API_ENDPOINT}tags`);
                 setTags(tagsData.data);
             } catch (error) {
-                console.error(error);
+                // Handle error silently
             }
         };
 
@@ -52,14 +66,14 @@ const Products = () => {
         setLoading(true); // Start loading
         try {
             const url = activeTag == 'all' ?
-                `${API_ENDPOINT}services/all?per_page=${itemsPerPage}&page=${page}` :
+                `${API_ENDPOINT}services?per_page=${itemsPerPage}&page=${page}` :
                 `${API_ENDPOINT}services/${activeTag}?per_page=${itemsPerPage}&page=${page}`;
             const productsData = await axios.get(url);
             setProducts(productsData.data.data);
             setPageCount(productsData.data.last_page);
             setCurrentPage(productsData.data.current_page);
         } catch (error) {
-            console.error(error);
+            // Handle error silently
         } finally {
             setLoading(false); // Stop loading
         }
@@ -143,6 +157,16 @@ const Products = () => {
         dispatch(addFavorite(id));
     }
 
+    // Helper function to check if a product is in favorites
+    const isProductInFavorites = (productId) => {
+        if (!Array.isArray(favorites)) {
+            return false;
+        }
+        // Check if the product is in favorites by comparing service_id
+        // Convert both to strings for comparison to handle different data types
+        return favorites.some(fav => String(fav.service_id) === String(productId));
+    };
+
     return (
         <main>
             <section className="text-white mt-24 mb-24 relative z-20">
@@ -194,7 +218,7 @@ const Products = () => {
                                             {
                                                 <span className='bg-[#0B1306] text-[#4CC800] py-2 px-5 shadow-[0px 4px 24px 0px #4CC80033] rounded-full font-THICCCBOI-Medium font-medium text-[12px] leading-4 absolute -top-4 z-20 left-[10%]'>{product.label_name}</span>
                                             }
-                                            <Link to={"/services/" + product.name.toLowerCase().replace(/ /g, "-") + `-p${product.id}`} state={{ service_id: product.id }} prefetch={"intent"} className='block w-full overflow-hidden rounded-[20px]'>
+                                            <Link to={"/service-details/" + `${product.id}`} state={{ service_id: product.id }} prefetch={"intent"} className='block w-full overflow-hidden rounded-[20px]'>
                                                 <img
                                                     src={`${Number(product.is_url) ? product.image : DOMAIN + product.image}`}
                                                     className='w-full relative top-0 z-10 transition-transform transform group-hover:scale-125 h-72 object-cover object-center'
@@ -206,11 +230,17 @@ const Products = () => {
                                                 (
                                                     <button
                                                         className='absolute -bottom-4 right-[10%] z-20 p-2 bg-white rounded-full'
-                                                        onClick={() => ((favorites.filter(fav => (fav.service_id == product.id)).length > 0) ? handleRemoveFromFavorites(product.id) : handleAddToFavorites(product.id))}
+                                                        onClick={() => {
+                                                            if (isProductInFavorites(product.id)) {
+                                                                handleRemoveFromFavorites(product.id);
+                                                            } else {
+                                                                handleAddToFavorites(product.id);
+                                                            }
+                                                        }}
                                                     >
                                                         <HeartIcon
                                                             className="w-4 h-4"
-                                                            fill={(favorites.filter(fav => (fav.service_id == product.id)).length > 0) ? "#4CC800" : ""}
+                                                            fill={isProductInFavorites(product.id) ? "#4CC800" : ""}
                                                             stroke='#4CC800' />
                                                     </button>
                                                 )

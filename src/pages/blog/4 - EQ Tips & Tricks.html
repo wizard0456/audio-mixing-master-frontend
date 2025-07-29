@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Post Template - Audio Mixing Blog</title>
+    <meta name="description" content="Template for audio mixing blog posts.">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Heroicons CDN -->
+    <script src="https://unpkg.com/@heroicons/react@2.0.18/24/outline/esm/index.js"></script>
+    
+    <style>
+        /* Custom Fonts */
+        @font-face {
+            font-family: 'THICCCBOI-Black';
+            src: url('data:font/woff2;base64,d09GMgABAAAAAA...') format('woff2');
+            font-weight: 900;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'THICCCBOI-Bold';
+            src: url('data:font/woff2;base64,d09GMgABAAAAAA...') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'THICCCBOI-Medium';
+            src: url('data:font/woff2;base64,d09GMgABAAAAAA...') format('woff2');
+            font-weight: 500;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'THICCCBOI-Regular';
+            src: url('data:font/woff2;base64,d09GMgABAAAAAA...') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+        }
+        
+        /* Custom Styles */
+        .font-THICCCBOI-Black { font-family: 'THICCCBOI-Black', sans-serif; }
+        .font-THICCCBOI-Bold { font-family: 'THICCCBOI-Bold', sans-serif; }
+        .font-THICCCBOI-Medium { font-family: 'THICCCBOI-Medium', sans-serif; }
+        .font-THICCCBOI-Regular { font-family: 'THICCCBOI-Regular', sans-serif; }
+        .font-Montserrat { font-family: 'Montserrat', sans-serif; }
+        .font-Roboto { font-family: 'Roboto', sans-serif; }
+        
+        /* Blog Content Styles */
+        .blog-content { 
+            
+            margin: 0 auto; 
+            line-height: 1.8; 
+        }
+        .blog-content h2 { 
+            color: #4CC800; 
+            margin-top: 2rem; 
+            margin-bottom: 1rem; 
+            font-size: 1.8rem; 
+            font-family: 'THICCCBOI-Medium', sans-serif;
+        }
+        .blog-content h3 { 
+            color: #ffffff; 
+            margin-top: 1.5rem; 
+            margin-bottom: 0.75rem; 
+            font-size: 1.4rem; 
+            font-family: 'THICCCBOI-Medium', sans-serif;
+        }
+        .blog-content p { 
+            margin-bottom: 1rem; 
+            color: #e5e7eb; 
+            font-family: 'Roboto', sans-serif;
+        }
+        .blog-content ul { 
+            margin-bottom: 1rem; 
+            padding-left: 2rem; 
+        }
+        .blog-content li { 
+            margin-bottom: 0.5rem; 
+            color: #e5e7eb; 
+            font-family: 'Roboto', sans-serif;
+        }
+        .blog-content blockquote {
+            border-left: 4px solid #4CC800;
+            padding-left: 1rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: #d1d5db;
+        }
+        .blog-content code {
+            background-color: #1f2937;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-family: 'Courier New', monospace;
+            color: #f3f4f6;
+        }
+        .blog-content pre {
+            background-color: #1f2937;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        .blog-content pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        /* Meta Styles */
+        .blog-meta { 
+            display: flex; 
+            gap: 2rem; 
+            margin-bottom: 2rem; 
+            color: #9ca3af; 
+            font-size: 0.9rem; 
+            font-family: 'Montserrat', sans-serif;
+        }
+        .blog-image { 
+            width: 100%; 
+            height: 400px; 
+            object-fit: cover; 
+            border-radius: 12px; 
+            margin-bottom: 2rem;
+            padding-left: 150px; padding-right: 150px;
+        }
+
+
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .blog-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .blog-content h2 {
+                font-size: 1.5rem;
+            }
+            .blog-content h3 {
+                font-size: 1.2rem;
+            }
+
+            .blog-image { 
+           
+            
+            height: auto; 
+            padding-left: 0px; padding-right: 0px;
+        }
+        }
+        }
+        
+        /* Custom Background Gradients */
+        .bg-gradient-dark {
+            background: linear-gradient(135deg, #0B1306 0%, #1a1a1a 100%);
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4CC800;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3ba001;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <main class="mt-24">
+        <div class="max-w-[1110px] mx-auto px-5 md:px-10 xl:px-0">
+            <!-- Back Button -->
+            <div class="mb-8">
+                <a href="/blog" class="inline-flex items-center text-[#4CC800] hover:text-[#4DC801] transition-colors font-Montserrat font-medium">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    Back to Blog
+                </a>
+            </div>
+            
+            <!-- Article Header -->
+            <header class="mb-8">
+                <h1 class="text-4xl md:text-5xl font-THICCCBOI-Medium mb-4 leading-tight">
+                    EQ Tips & Tricks
+                </h1>
+                <div class="blog-meta">
+                    <span>By [AUTHOR_NAME]</span>
+                    <span>[PUBLISH_DATE]</span>
+                    <span>[READ_TIME] min read</span>
+                    <span>Category: [CATEGORY_NAME]</span>
+                </div>
+                <p>There are very few absolute “Rights and Wrongs” when it comes to EQ. Basically, if it sounds good to you, it’s right. There are some generally accepted thoughts on the matter though, so we’ll go over some of them as starting points. One generally accepted thought is that most vocal mics are very midrange heavy. Typically a cut in the midrange along with a slight boost of the bass and treble frequencies can compensate for this. Now remember, every voice is different, so don’t just set every vocal mic in your system to one setting and go. You have to listen to the individual characteristics of each voice. If someone has a deep, booming voice you may find yourself cutting the bass and boosting the mids and highs. A female vocalist may have a very light, “airy” voice and may need some help (boost) in the low and mid areas. “Sweep” type or Parametric midrange controls are great because they let you “dial in” the particular problem frequency and then boost or cut it. For example, to find a problem frequency, you can turn the “level” control of the mid-sweep to full cut and then sweep the “frequency” knob until you find the exact frequency that you want to cut. Then re-adjust the “level” knob to the actual amount of cut you want. Fully parametric EQ’s let you adjust the band-width as well. This is generally called a “Q” adjustment and it determines how big of a chunk (in octaves) will be cut or boosted. Typically these can be adjusted anywhere from 0.1 to a full octave. Most mixers don’t have fully parametric EQ, while semi-parametric EQ’s (no Q adjust) are quite common.</p>
+            </header>
+            
+            <!-- Featured Image -->
+            <img src="https://zetdigitesting.online/blog/wp-content/uploads/2024/10/f28a5a205c46401782208653ae1512f5.jpg" alt="EQ Tips & Tricks" class="blog-image">
+            
+            <!-- Article Content -->
+            <article class="blog-content">
+                <p>Another generally accepted thought is that there really isn’t much below 40Hz that anyone wants to hear live. On a recording it may be a different story, but live you pretty much want to cut anything below 40Hz. This will do several things: it will reduce stage rumble, reduce that “flabby, booming” kick/bass sound, will increase headroom (which is the reserve power capability) in your power amplifiers (because now they won’t have to reproduce those power robbing low frequencies), and generally clean up the whole mix. If your amp, crossover or mixer has sub-sonic filters… use them! Those filters are the quickest way to cut down on those unwanted low frequencies below 40 Hz. Also, on midrange and treble instruments (vocals, horns, guitars, keys, etc.) use the channel low cut (if available). These vary from 75Hz to 100Hz and give you all of the above mentioned benefits without adversely affecting the sound. Now I know that some 5 & 6 string bass players and keyboard players will insist that there is desirable musical content below 40Hz. However, there are harmonics and overtones that still let you hear the low “B” being played on a 5 string bass, you just won’t hear the fundamental (approx. 30Hz). I think the trade-off (a clean, punchy mix) is worth it. You can decide for yourself.Part of getting the sound you want is knowing where an instrument lies in the frequency spectrum and part of it is just plain experimentation.</p>
+
+                <p>Most people know that a kick drum is a bass instrument right? Well, yes and no. Most of what you hear from a kick drum is in the bass region, true, but try boosting the kick at 1K. Hear that extra “snap” that you just added? Or try boosting the snare around 250Hz. That midrange/treble drum suddenly sounds huge and punchy. Bass guitar is often “mis EQ’d”. Instead of pumping up the low end until the windows shake loose, try cutting around 400Hz to get rid of some “mud” and boosting around 1.5K to add some “twang”. The bass will cut through the mix with great definition and still have plenty of low end. Some instruments (like a piano) cover a very wide range of the spectrum and can be very difficult to EQ. I’ve seen sound people use six EQs on a grand piano (4 channel mixer EQ, 2 outboard parametric). Of course this probably means it wasn’t mic’ed properly to begin with. Proper mic selection and placement are necessary to get as close to the right sound as possible so that major EQ work is not needed (but that’s another article). Electric or sampled pianos are pre-EQ’d and typically don’t require as much work. Maybe cut the bass a bit and boost the treble so it fits in the mix better (keep in mind that a solo instrument should be treated differently and may not require as much EQ, if any, as an instrument that you want to fit into a mix). When trying to fit a lot of instruments into a mix, try what I call “contrary” EQ. If the instrument is in the bass range, try boosting the high-mid or treble frequencies, add some low end to a female vocal, or add some “edge” to a male vocalist with a treble boost.</p>
+
+                <p>Graphic EQ’s are usually used on the overall mix and in the monitor mix. For the overall mix you would want to use a graphic EQ to fine tune your mix to a particular room. If it’s a “dead” room (acoustic tile ceiling, thick carpet and full of people), you may want to boost the high end and/or cut some low frequencies, if it’s a “live” (hard floors, walls, ceiling, etc.) room you may need to cut the high/mid and treble a bit. Typically, a 10 to 15 band graphic (2/3 to 1 octave) is sufficient for mains. For monitors you may need a 30 band (1/3 octave) graphic EQ for each monitor mix. This type of narrow-band fine tuning lets you precisely locate and cut frequencies that cause “feedback”, rumble, hum, etc. I could write fifty more pages and not cover the half of it. Please remember that these are suggestions for starting points and they are my personal opinions. Experiment and find out what works best for you. Also remember there is no substitute for quality equipment. If you use a poor sounding mic, mixer, amp, instrument, etc., no amount of EQ will totally fix it.</p>
+
+                <p>Until next time, adios! – <a href="https://www.audiomixingmastering.com/" target="_blank" style="color: #00bfff;" onmouseover="this.style.color='#aaffa4'" onmouseout="this.style.color='#00bfff'">Audiomixingmastering.com</a></p>
+                
+                
+            </article>
+        </div>
+    </main>
+    
+    <!-- JavaScript for Interactive Features -->
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Add loading animation for images
+        document.querySelectorAll('img').forEach(img => {
+            img.addEventListener('load', function() {
+                this.style.opacity = '1';
+            });
+            img.style.opacity = '0';
+            img.style.transition = 'opacity 0.3s ease-in-out';
+        });
+        
+        // Add hover effects for links
+        document.querySelectorAll('a').forEach(link => {
+            link.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-1px)';
+            });
+            link.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+        
+        // Format dates
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        }
+        
+        // Update all date placeholders
+        document.querySelectorAll('[data-date]').forEach(element => {
+            const dateString = element.getAttribute('data-date');
+            if (dateString) {
+                element.textContent = formatDate(dateString);
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -61,13 +61,13 @@ const Footer = () => {
                 <div className="max-w-[666px] mx-auto">
                     <ul className="flex items-center justify-center gap-y-5 gap-x-10 md:gap-10 flex-wrap md:flex-nowrap">
                         <li><Link to={`/upload`} className="font-Roboto font-normal text-base hover:text-[#4CC800]">Upload</Link></li>
-                        <li><Link to={`/services`} className="font-Roboto font-normal text-base hover:text-[#4CC800]">Services</Link></li>
+                        <li><Link to={`/select-services`} className="font-Roboto font-normal text-base hover:text-[#4CC800]">Services</Link></li>
                         <li><Link to={`/samples`} className="font-Roboto font-normal text-base hover:text-[#4CC800]">Samples</Link></li>
+                        <li><Link to={`/about`} className="font-Roboto font-normal text-base hover:text-[#4CC800]">About</Link></li>
                         <li><Link to={`/faq`} className="font-Roboto font-normal text-base hover:text-[#4CC800]">FAQ</Link></li>
                         <li><Link to={`/reviews`} className="font-Roboto font-normal text-base hover:text-[#4CC800]">Reviews</Link></li>
                         <li><Link to={`/contact`} className="font-Roboto font-normal text-base hover:text-[#4CC800]">Contact</Link></li>
-                        <li><Link to={`/about`} className="font-Roboto font-normal text-base hover:text-[#4CC800]">About</Link></li>
-                        <li><Link to={`https://zetdigitesting.online/blog/`} className="font-Roboto font-normal text-base hover:text-[#4CC800]">Blog</Link></li>
+                        <li><Link to={`/blog`} className="font-Roboto font-normal text-base hover:text-[#4CC800]">Blog</Link></li>
                     </ul>
                 </div>
 
@@ -91,7 +91,7 @@ const Footer = () => {
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-5">
                         <div className="font-Roboto font-normal text-base">E-Mail: <a href="mailto:support@audiomixingmastering.com">support@audiomixingmastering.com</a></div>
                         <div className="w-2 h-2 bg-white rounded-full hidden sm:block"></div>
-                        <div className="font-Roboto font-normal text-base">Cell: <a href="tel:+316240386772">+31 (63) 403-8672</a></div>
+                        <div className="font-Roboto font-normal text-base">Cell: <a href="tel:+31634038672">+31 (63) 403-8672</a></div>
                     </div>
                 </div>
 

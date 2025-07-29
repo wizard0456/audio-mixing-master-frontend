@@ -124,7 +124,7 @@ const Samples = () => {
                     {!loading && (
                         <div className='mt-20'>
                             <p className='w-4/5 font-Roboto text-base leading-6 text-center font-normal mx-auto'>
-                                Thank you for taking the time to listen to our before and after samples. If you are happy with what you hear, you may go ahead and <Link to="/services" className='text-[#4CC800] underline font-semibold'>Click here</Link> to get started right away on your songs today. Our team is ready and full of excitement to make your music sound warm, punchy and radio-ready quality!
+                                Thank you for taking the time to listen to our before and after samples. If you are happy with what you hear, you may go ahead and <Link to="/select-services" className='text-[#4CC800] underline font-semibold'>Click here</Link> to get started right away on your songs today. Our team is ready and full of excitement to make your music sound warm, punchy and radio-ready quality!
                             </p>
                         </div>
                     )}

@@ -80,15 +80,14 @@ const Cart = () => {
 
             // Gather necessary transaction details
             const transactionDetails = {
-                user: user, // user details from Redux
-                cartItems: cartItems, // cart items from Redux
-                transactionId: details.id, // PayPal transaction ID
-                payer: details.payer, // payer information from PayPal
-                promoCode: promoCodeApplied // applied promo code
+                id: order.id,
+                amount: order.amount,
+                payer_name: user ? userInfo.first_name + " " + userInfo.last_name : guestInfo.email,
+                payer_email: user ? userInfo.email : guestInfo.email,
+                payer_phone: user ? (userInfo.phone || '') : guestInfo.phone,
             };
 
             // Handle transaction details (send to server, update UI, etc.)
-            console.log('Transaction Details:', transactionDetails);
 
             // Clear the cart or redirect the user as needed
             // dispatch(clearCart()); // Example action to clear the cart

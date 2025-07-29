@@ -1,0 +1,74 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": "mixing",
+      "name": "Mixing",
+      "slug": "mixing",
+      "description": "Audio mixing techniques and tips",
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": "mastering",
+      "name": "Mastering",
+      "slug": "mastering", 
+      "description": "Audio mastering techniques and best practices",
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": "equipment",
+      "name": "Equipment",
+      "slug": "equipment",
+      "description": "Audio equipment reviews and recommendations",
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": "technology",
+      "name": "Technology",
+      "slug": "technology",
+      "description": "Latest audio technology and innovations",
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": "studio",
+      "name": "Studio Setup",
+      "slug": "studio-setup",
+      "description": "Home studio setup and acoustic treatment",
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": "tips",
+      "name": "Tips & Tricks",
+      "slug": "tips-tricks",
+      "description": "Pro tips and tricks for audio production",
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": "recording",
+      "name": "Recording",
+      "slug": "recording",
+      "description": "Recording techniques and microphone placement",
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": "production",
+      "name": "Music Production",
+      "slug": "music-production",
+      "description": "Music production workflows and techniques",
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    }
+  ],
+  "meta": {
+    "total": 8,
+    "page": 1,
+    "per_page": 50
+  }
+} 

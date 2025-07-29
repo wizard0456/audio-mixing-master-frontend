@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Post Template - Audio Mixing Blog</title>
+    <meta name="description" content="Template for audio mixing blog posts.">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Heroicons CDN -->
+    <script src="https://unpkg.com/@heroicons/react@2.0.18/24/outline/esm/index.js"></script>
+    
+    <style>
+        /* Custom Fonts */
+        @font-face {
+            font-family: 'THICCCBOI-Black';
+            src: url('data:font/woff2;base64,d09GMgABAAAAAA...') format('woff2');
+            font-weight: 900;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'THICCCBOI-Bold';
+            src: url('data:font/woff2;base64,d09GMgABAAAAAA...') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'THICCCBOI-Medium';
+            src: url('data:font/woff2;base64,d09GMgABAAAAAA...') format('woff2');
+            font-weight: 500;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'THICCCBOI-Regular';
+            src: url('data:font/woff2;base64,d09GMgABAAAAAA...') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+        }
+        
+        /* Custom Styles */
+        .font-THICCCBOI-Black { font-family: 'THICCCBOI-Black', sans-serif; }
+        .font-THICCCBOI-Bold { font-family: 'THICCCBOI-Bold', sans-serif; }
+        .font-THICCCBOI-Medium { font-family: 'THICCCBOI-Medium', sans-serif; }
+        .font-THICCCBOI-Regular { font-family: 'THICCCBOI-Regular', sans-serif; }
+        .font-Montserrat { font-family: 'Montserrat', sans-serif; }
+        .font-Roboto { font-family: 'Roboto', sans-serif; }
+        
+        /* Blog Content Styles */
+        .blog-content { 
+            
+            margin: 0 auto; 
+            line-height: 1.8; 
+        }
+        .blog-content h2 { 
+            color: #4CC800; 
+            margin-top: 2rem; 
+            margin-bottom: 1rem; 
+            font-size: 1.8rem; 
+            font-family: 'THICCCBOI-Medium', sans-serif;
+        }
+        .blog-content h3 { 
+            color: #ffffff; 
+            margin-top: 1.5rem; 
+            margin-bottom: 0.75rem; 
+            font-size: 1.4rem; 
+            font-family: 'THICCCBOI-Medium', sans-serif;
+        }
+        .blog-content p { 
+            margin-bottom: 1rem; 
+            color: #e5e7eb; 
+            font-family: 'Roboto', sans-serif;
+        }
+        .blog-content ul { 
+            margin-bottom: 1rem; 
+            padding-left: 2rem; 
+        }
+        .blog-content li { 
+            margin-bottom: 0.5rem; 
+            color: #e5e7eb; 
+            font-family: 'Roboto', sans-serif;
+        }
+        .blog-content blockquote {
+            border-left: 4px solid #4CC800;
+            padding-left: 1rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: #d1d5db;
+        }
+        .blog-content code {
+            background-color: #1f2937;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-family: 'Courier New', monospace;
+            color: #f3f4f6;
+        }
+        .blog-content pre {
+            background-color: #1f2937;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        .blog-content pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        /* Meta Styles */
+        .blog-meta { 
+            display: flex; 
+            gap: 2rem; 
+            margin-bottom: 2rem; 
+            color: #9ca3af; 
+            font-size: 0.9rem; 
+            font-family: 'Montserrat', sans-serif;
+        }
+        .blog-image { 
+            width: 100%; 
+            height: 400px; 
+            object-fit: cover; 
+            border-radius: 12px; 
+            margin-bottom: 2rem;
+            padding-left: 150px; padding-right: 150px;
+        }
+
+
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .blog-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .blog-content h2 {
+                font-size: 1.5rem;
+            }
+            .blog-content h3 {
+                font-size: 1.2rem;
+            }
+
+            .blog-image { 
+           
+            
+            height: auto; 
+            padding-left: 0px; padding-right: 0px;
+        }
+        }
+        }
+        
+        /* Custom Background Gradients */
+        .bg-gradient-dark {
+            background: linear-gradient(135deg, #0B1306 0%, #1a1a1a 100%);
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4CC800;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3ba001;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <main class="mt-24">
+        <div class="max-w-[1110px] mx-auto px-5 md:px-10 xl:px-0">
+            <!-- Back Button -->
+            <div class="mb-8">
+                <a href="/blog" class="inline-flex items-center text-[#4CC800] hover:text-[#4DC801] transition-colors font-Montserrat font-medium">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    Back to Blog
+                </a>
+            </div>
+            
+            <!-- Article Header -->
+            <header class="mb-8">
+                <h1 class="text-4xl md:text-5xl font-THICCCBOI-Medium mb-4 leading-tight">
+                    How to Set up a Good Mix
+                </h1>
+                <div class="blog-meta">
+                    <span>By [AUTHOR_NAME]</span>
+                    <span>[PUBLISH_DATE]</span>
+                    <span>[READ_TIME] min read</span>
+                    <span>Category: [CATEGORY_NAME]</span>
+                </div>
+                <p>What would be nice is a recipe that produces a perfect mix, like a recipe to bake the perfect cake, but there are many kinds of cake and which one you choose to bake depends on who you’re baking it for. With mixing, you have to consider the needs of the particular piece of music you’re working on, the needs of your perceived audience, and the environment in which the finished product will be heard. I like to call this approach ‘sympathetic mixing’ and, as with all good practical philosophies, it has its pleasures as well as its chores.</p>
+            </header>
+            
+            <!-- Featured Image -->
+            <img src="https://zetdigitesting.online/blog/wp-content/uploads/2024/10/a27d24_a86f6b82a92b4c2298a94c0164c9596fmv2.jpg" alt="How to Set up a Good Mix" class="blog-image">
+            
+            <!-- Article Content -->
+            <article class="blog-content">
+                
+                <h2>LISTEN WITHOUT PREJUDICE</h2>
+                <p>If you’re going to make a good mix engineer, you first need to know how other people do it, so listen to as much music as you can, in all styles, and in every possible listening environment. This is a wonderful excuse for you to have a huge collection of recordings and indulge your passion for music, but it goes further than that. Don’t just watch television, listen to the incidental music. Check out the sound effects on that sci-fi movie. Analyse the jingles to your favourite ads. Drive with the radio on or go to clubs. The great thing is, you can be working while you’re enjoying yourself.</p>
+                
+                <blockquote>
+                    “Although there is always room for creativity in the mix, there are established routines and techniques which it pays to learn before you start to develop your own mixing style.”
+                </blockquote>
+
+                <p>Listen out for mixes that have been particularly well done and start asking yourself exactly why you like them. Is it a particular combination of sounds that works so well, and what if any processing has been used? Just how much compression was applied to the bass guitar which sits so tightly with the kick drum? Does the depth of reverb affect the listener’s perceived intimacy of the singer’s performance, and what relationship does the reverb decay time have to the tempo of the song? Even in an apparently simple mix, there can be a lot going on, and once you get into the habit of listening carefully to other people’s mixes, you’ll pick up a lot of information and ideas in a very short time.</p>
+
+                <p>One thing I can confidently predict is that you’ll find your favourite mixes are balanced in such a way that the individual instruments and voices complement and contrast each other in a sympathetic manner, while contributing to the whole emotion of the piece.</p>
+
+                <h2>EMULATE OTHERS</h2>
+                <p>The next logical step is to experiment with your own gear; find out what it can do by trying to emulate the best engineers’ and producers’ work you’ve heard. Stretch yourself. Something that I’ve tried, which I’d thoroughly recommend, is to record your own version of a really brilliant track — it doesn’t matter that they probably had mountains of equipment and you’ve only got a 4-track, you’ll still learn a lot by experimenting. As with playing a musical instrument, the first step to learning is to emulate performers who you admire — your own style will develop later.</p>
+                <p>While working on your trial mix, you should constantly be doing A/B listening tests between your work and the best tracks in your record collection. Again, you’ll teach yourself plenty while you do this and I bet your next in-house production benefits very noticeably from your efforts.</p>
+                
+
+                <h2>HERE’S ONE I DID EARLIER…</h2>
+                <p>The next stage is to try out sympathetic mixing on one of your own tracks — perhaps you have an unfinished piece lying dormant in the form of a MIDI File or partly recorded multitrack tape. If you have any early rough mixes, check them out to see what worked and what didn’t, then draw up a plan for the final master.</p>
+                <p>Firstly, decide what carries the main hooks (or delivers the most vital emotions) and give those instruments/voices the highest priority, setting up any necessary gates, compressors and effects as you go along. Next, introduce the instruments that are most essential to the style of the music, such as the bass and rhythm section. After that come instruments of lesser importance, which you can bring in at levels where they feel comfortable. Check the overall balance regularly and make sure no portion of the overall frequency range is too full or too empty (it’s very important that you know and trust your monitors for this). Once the mix seems to be happening, take a short break and give your ears a rest.</p>
+                
+
+
+                <blockquote>
+                    “Even in an apparently simple mix, there can be a lot going on, and once you get into the habit of listening carefully to other people’s mixes, you’ll pick up a lot of information and ideas in a very short time.”
+                </blockquote>
+
+
+                <p>Make sure your mix sounds good in mono before you start to use the pan pots, and keep in mind that bass sounds tend to be panned at or close to the centre of the mix. Once you’ve got the stereo side of the mix working, check the mono compatibility by hitting the mono button on your mixing desk. It also helps to listen to the mix from outside the room (honestly!), as this can often reveal balance problems that weren’t immediately obvious.</p>
+
+                <p>The tonal balance of a good mix is largely determined by the choice of instruments/sounds and by the arrangement, but minor tweaks to EQ may be used to create a ‘hole’ in which the priority vocal or instrument can sit. It’s best to go for EQ cuts rather than boosts when doing this. When the mix is close to perfect a change of just a couple of dB will sound like a lot, so be wary of having to make radical adjustments — it may be time for another cup of tea! The degree of effects treatment will also alter your perception of how far forward or back something sounds in the mix, and a judicious tweak can be tried here and there.</p>
+
+                <p>Now we can pay attention to the clever twiddly bits and ‘specials’ that give the mix its character and your trademark. Finally, try running through the mix at very low volumes to give an indication of what it will sound like on a small sound system. If you’ve got time to check out a cassette of a rough mix in the car, so much the better.</p>
+
+
+                <h2>MIXING GUIDELINES</h2>
+                <p>Although there is always room for creativity in the mix, there are established routines and techniques which it pays to learn before you start to develop your own mixing style. Here are a few ‘essentials’ which you should keep in mind when mixing a pop song.</p>
+
+
+                <ul style="list-style-type: disc; padding-left: 20px;">
+                    <li>
+                        Pan the bass drum and bass guitar to the centre, and keep them fairly dry. These elements underpin and hold the whole track together, so they’re a good place to start.
+                    </li>
+  
+                    <li>
+                        Put the snare in the centre and then pan the rest of the drum kit. Beware of hard panning though — there’s something disquieting in hearing a drummer whose arms apparently stretch right across the stereo field! However, hard panning does work well on other percussion instruments, such as tambourine and shaker.
+                    </li>
+  
+                    <li>
+                        Choose the decay time of reverb effects carefully on drums and percussion. If it’s too long, you can easily lose the rhythmic drive. Reverb fills up the spaces between sounds, which can also detract from the sense of loudness.
+                    </li>
+  
+                    <li>
+                        Bring up other instruments to appropriate levels, and once they’re balanced in mono, separate them out by panning.Pay particular attention to the overall stereo balance, both by ear and on your meters.
+                    </li>
+  
+                    <li>
+                        Keep the lead vocal in the centre of the stereo image and well forward.If the vocal is too loud, it will sound ‘stuck on’; if it’s too quiet, intelligibility suffers.Checking from outside the room is especially useful when evaluating vocal levels.
+                    </li>
+  
+                    <li>
+                        Ride the fader for dynamic instruments like vocals throughout the mix.A suitable soft-knee compressor makes this easier and often helps the vocal sound more exciting and punchy — but beware of over-compressing (unless it's intentional).
+                    </li>
+  
+                    <li>
+                        Use reverb that complements the vocal’s tonality.Remember: the proportion of dry to wet signal strongly influences the perceived intimacy or distance of the performer.
+                    </li>
+                </ul>
+
+
+                <h2>DON’T DO THIS!</h2>
+                <p>Here’s a short list of things you shouldn’t do when mixing, which I’ve compiled from (bitter) experience.</p>
+
+                <ul style="list-style-type: disc; padding-left: 20px;">
+                    <li>Don’t master on old tape — you risk compromising hours of painstaking work. Always use fresh tape.</li>
+                    <li>Don’t mix when you’re tired after a 14-hour session.</li>
+                    <li>Don’t try to achieve a balance by continually raising levels — you’ll end up with no headroom and risk distortion.</li>
+                    <li>Don’t attempt to make every part sound big and impressive — your mix will sound like an aural competition. Accept that some parts are supposed to be up-front while others are in the background.</li>
+                    <li>Don’t forget to check that your mix sounds good in mono, before you start to use the pan controls.</li>
+                    <li>Don’t monitor at continually high levels — it dulls your sensitivity, tires your ears, and can damage your hearing. It also alters your perception of sound for hours.</li>
+                    <li>Don’t forget to check each signal in isolation for unwanted noise and distortion. Set up your mixer and effects gains before you start mixing.</li>
+                    <li>Don’t drown the mix in your latest favourite effect — no matter how much it cost! Most professional mixes use effects sparingly.</li>
+                    <li>Don’t attempt better instrument separation by applying lots of EQ boost to everything — the overall sound will become unnatural and harsh. Cutting EQ usually sounds more natural.</li>
+                    <li>Don’t stick to the rules if you can improve something by breaking them!</li>
+                </ul>
+                <p></p>
+                
+            </article>
+        </div>
+    </main>
+    
+    <!-- JavaScript for Interactive Features -->
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Add loading animation for images
+        document.querySelectorAll('img').forEach(img => {
+            img.addEventListener('load', function() {
+                this.style.opacity = '1';
+            });
+            img.style.opacity = '0';
+            img.style.transition = 'opacity 0.3s ease-in-out';
+        });
+        
+        // Add hover effects for links
+        document.querySelectorAll('a').forEach(link => {
+            link.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-1px)';
+            });
+            link.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+        
+        // Format dates
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        }
+        
+        // Update all date placeholders
+        document.querySelectorAll('[data-date]').forEach(element => {
+            const dateString = element.getAttribute('data-date');
+            if (dateString) {
+                element.textContent = formatDate(dateString);
+            }
+        });
+    </script>
+</body>
+</html> 

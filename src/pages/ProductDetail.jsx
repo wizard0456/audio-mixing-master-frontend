@@ -8,7 +8,7 @@ import { Slide, toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem, addToCart, getCartItems } from '../reducers/cartSlice';
 import { selectUser } from '../reducers/authSlice';
-import { addFavorite, deleteFavorite, getFavorites } from '../reducers/userFavirotesSlice';
+import { addFavorite, deleteFavorite, getFavorites, fetchFavorites } from '../reducers/userFavirotesSlice';
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 import CustomModal from '../components/CustomModal';
@@ -26,8 +26,7 @@ const ProductDetail = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [selectedTab, setSelectedTab] = useState(TABS[0]);
     const [quantity, setQuantity] = useState(1);
-    const name = useParams();
-    const service_id = name.productName.slice(name.productName.lastIndexOf('-p') + 2);
+    const service_id = useParams()['productName'];
 
     const cartItems = useSelector(getCartItems);
     const user = useSelector(selectUser);
@@ -52,7 +51,17 @@ const ProductDetail = () => {
                 },
             })
                 .then(response => {
-                    const data = response.data;
+                    let data;
+                    if (response.data && response.data.success && response.data.data) {
+                        // New API structure with success wrapper
+                        data = response.data.data;
+                    } else if (response.data) {
+                        // Fallback for old API structure
+                        data = response.data;
+                    } else {
+                        return;
+                    }
+                    
                     setProduct(data);
                     setSelectedProduct(data); // Set parent product as default
 
@@ -61,7 +70,7 @@ const ProductDetail = () => {
                     }
                 })
                 .catch(error => {
-                    console.error('Error fetching product data:', error);
+                    // Handle error silently
                 });
         }
     }, [service_id]);
@@ -106,6 +115,18 @@ const ProductDetail = () => {
     function handleAddToFavorites(id) {
         dispatch(addFavorite(id));
     }
+
+    // Helper function to check if a product is in favorites
+    const isProductInFavorites = (productId) => {
+        return favorites.some(fav => String(fav.service_id) === String(productId));
+    };
+
+    // Fetch favorites if user is authenticated but favorites haven't been loaded
+    useEffect(() => {
+        if (user && favorites.length === 0) {
+            dispatch(fetchFavorites());
+        }
+    }, [user, favorites.length, dispatch]);
 
     const addToCartHandler = () => {
         const pkg = selectedProduct;
@@ -204,7 +225,7 @@ const ProductDetail = () => {
                 </picture>
                 <div className='relative z-20 bg-[#0B1306] p-8 px-5 md:px-10 xl:px-0'>
                     <div className='max-w-[1110px] mx-auto'>
-                        <p className='font-Roboto font-normal text-base leading-6'><Link to={'/services-all'}>Services</Link> / <span className='text-[#4CC800] font-semibold'>Services Details</span></p>
+                        <p className='font-Roboto font-normal text-base leading-6'><Link to={'/services'}>Services</Link> / <span className='text-[#4CC800] font-semibold'>Services Details</span></p>
                     </div>
                 </div>
             </section>
@@ -343,11 +364,11 @@ const ProductDetail = () => {
 
                                         {user && selectedProduct.category.name.toLowerCase() !== "gift card" && (
                                             <button className='p-3 bg-white rounded-full'
-                                                onClick={() => ((favorites.filter(fav => (fav.service_id == selectedProduct.id)).length > 0) ? handleRemoveFromFavorites(selectedProduct.id) : handleAddToFavorites(selectedProduct.id))}
+                                                                                                        onClick={() => (isProductInFavorites(selectedProduct.id) ? handleRemoveFromFavorites(selectedProduct.id) : handleAddToFavorites(selectedProduct.id))}
                                             >
                                                 <HeartIcon
                                                     className="w-6 h-6"
-                                                    fill={(favorites.filter(fav => (fav.service_id == selectedProduct.id)).length > 0) ? "#4CC800" : ""}
+                                                    fill={isProductInFavorites(selectedProduct.id) ? "#4CC800" : ""}
                                                     stroke='#4CC800' />
                                             </button>
                                         )}

@@ -38,7 +38,8 @@ const About = () => {
                 setLoading(false);
 
             } catch (error) {
-                console.log(error.response.data);
+                // Handle error silently
+            } finally {
                 setLoading(false);
             }
         })()

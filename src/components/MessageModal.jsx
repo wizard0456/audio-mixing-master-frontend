@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { CheckIcon } from '@heroicons/react/24/outline';
 import { useSelector } from 'react-redux';
-import { selectUser } from '../reducers/authSlice';
+import { selectUser, getUserToken } from '../reducers/authSlice';
 import { selectUserInfo } from '../reducers/userSlice';
 import axios from 'axios';
 import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
@@ -12,12 +12,13 @@ import { API_ENDPOINT } from '../utils/constants';
 
 const stripePromise = loadStripe('pk_test_51MuE4RJIWkcGZUIabXuoFFrr5gMT5S9Ynq63FfkoZMVeEkq94UdXOKwK4t3msKIsQwnLwafv9JyvzIdKpbsFonwd00BWb4lWdj');
 
-const MessageModal = ({ selectedOrderItem, setRevisions, setOrderStatus, setOrderItems }) => {
+const MessageModal = ({ selectedOrderItem, setRevisions, setOrderStatus, setOrderItems, onClose }) => {
     const user = useSelector(selectUser);
     const [message, setMessage] = useState('');
     const [isMessageSent, setIsMessageSent] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const [showPaymentOptions, setShowPaymentOptions] = useState(false);
+    const [error, setError] = useState('');
 
     const handleSend = async () => {
         if (Number(selectedOrderItem.max_revision) == 0) {
@@ -25,7 +26,14 @@ const MessageModal = ({ selectedOrderItem, setRevisions, setOrderStatus, setOrde
             return;
         }
 
+        if (!message.trim()) {
+            setError('Please enter a message');
+            return;
+        }
+
         setIsProcessing(true);
+        setError('');
+        
         try {
             const response = await axios.post(`${API_ENDPOINT}revision`, {
                 order_id: selectedOrderItem.order_id,
@@ -33,12 +41,18 @@ const MessageModal = ({ selectedOrderItem, setRevisions, setOrderStatus, setOrde
                 message: message
             }, {
                 headers: {
-                    'Authorization': `Bearer ${user}`,
+                    'Authorization': `Bearer ${getUserToken(user)}`
                 },
             });
 
-            setRevisions(response.data.revision);
-            setOrderStatus(response.data.Order_status.toString());
+            console.log('Revision API response:', response.data);
+            
+            // Handle different possible response structures
+            const revisionData = response.data.revision || response.data.data?.revision || response.data;
+            const orderStatus = response.data.Order_status || response.data.data?.Order_status || response.data.order_status;
+            
+            setRevisions(revisionData);
+            setOrderStatus(orderStatus.toString());
             setOrderItems(prev => prev.map(item => {
                 if (item.id == selectedOrderItem.id) {
                     return {
@@ -47,12 +61,21 @@ const MessageModal = ({ selectedOrderItem, setRevisions, setOrderStatus, setOrde
                     };
                 }
                 return item;
-            }))
+            }));
 
             setIsMessageSent(true);
             setMessage(''); // Clear the message after sending
+            
+            // Close modal after 2 seconds
+            setTimeout(() => {
+                if (onClose) {
+                    onClose();
+                }
+            }, 2000);
+            
         } catch (error) {
-            console.error("Failed to send message:", error);
+            console.error('Error sending revision:', error);
+            setError('Failed to send message. Please try again.');
         } finally {
             setIsProcessing(false);
         }
@@ -62,6 +85,7 @@ const MessageModal = ({ selectedOrderItem, setRevisions, setOrderStatus, setOrde
         return (
             <div className="py-1">
                 {Number(selectedOrderItem.max_revision) == 0 && <p className="text-red-500 font-Montserrat text-base leading-6 font-normal mb-3 rounded-md">Please pay $25 to request another one.</p>}
+                {error && <p className="text-red-500 font-Montserrat text-base leading-6 font-normal mb-3 rounded-md">{error}</p>}
                 <textarea
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
@@ -94,6 +118,7 @@ const MessageModal = ({ selectedOrderItem, setRevisions, setOrderStatus, setOrde
                     message={message}
                     setMessage={setMessage}
                     setOrderStatus={setOrderStatus}
+                    onClose={onClose}
                 />
             </div>
         );
@@ -109,6 +134,7 @@ const MessageModal = ({ selectedOrderItem, setRevisions, setOrderStatus, setOrde
                 </div>
             ) : (
                 <>
+                    {error && <p className="text-red-500 font-Montserrat text-base leading-6 font-normal mb-3 rounded-md">{error}</p>}
                     <textarea
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
@@ -137,9 +163,10 @@ MessageModal.propTypes = {
     setRevisions: PropTypes.func.isRequired,
     setOrderStatus: PropTypes.func.isRequired,
     setOrderItems: PropTypes.func.isRequired,
+    onClose: PropTypes.func,
 };
 
-const ReviewPurchaseModal = ({ orderId, seletedOrderItems, amount, setRevisions, message, setMessage, setOrderStatus }) => {
+const ReviewPurchaseModal = ({ orderId, seletedOrderItems, amount, setRevisions, message, setMessage, setOrderStatus, onClose }) => {
     const user = useSelector(selectUser);
     const userInfo = useSelector(selectUserInfo);
     const [{ options }, paypalDispatch] = usePayPalScriptReducer();
@@ -167,12 +194,12 @@ const ReviewPurchaseModal = ({ orderId, seletedOrderItems, amount, setRevisions,
                         user_id: user.id,
                     }, {
                         headers: {
-                            'Authorization': `Bearer ${user}`,
+                            'Authorization': `Bearer ${getUserToken(user)}`,
                         },
                     });
                     setClientSecret(response.data);
                 } catch (error) {
-                    console.error('Error fetching client secret:', error);
+                    // Handle error silently
                 }
             };
 
@@ -181,7 +208,6 @@ const ReviewPurchaseModal = ({ orderId, seletedOrderItems, amount, setRevisions,
     }, [user, amount]);
 
     const handleCancel = (data) => {
-        console.log('PayPal payment cancelled', data);
         setIsProcessing(false);
     };
 
@@ -213,12 +239,11 @@ const ReviewPurchaseModal = ({ orderId, seletedOrderItems, amount, setRevisions,
             try {
                 await axios.post(API_ENDPOINT + 'buy-revision', transactionDetails, {
                     headers: {
-                        'Authorization': `Bearer ${user}`,
+                        'Authorization': `Bearer ${getUserToken(user)}`,
                     },
                 });
 
                 // Run Send revision after payment complete
-
                 const response = await axios.post(API_ENDPOINT + 'revision', {
                     order_id: orderId,
                     service_id: seletedOrderItems.service_id,
@@ -226,19 +251,32 @@ const ReviewPurchaseModal = ({ orderId, seletedOrderItems, amount, setRevisions,
                     transaction_id: transactionDetails.transaction_id
                 }, {
                     headers: {
-                        'Authorization': `Bearer ${user}`,
+                        'Authorization': `Bearer ${getUserToken(user)}`,
                     },
                 });
 
-                setRevisions(response.data.revision);
-                setOrderStatus(response.data.Order_status.toString());
+                console.log('Payment revision API response:', response.data);
+                
+                // Handle different possible response structures
+                const revisionData = response.data.revision || response.data.data?.revision || response.data;
+                const orderStatus = response.data.Order_status || response.data.data?.Order_status || response.data.order_status;
+                
+                setRevisions(revisionData);
+                setOrderStatus(orderStatus.toString());
                 setMessage('');
 
-
                 setIsPaymentComplete(true);
+                
+                // Close modal after 3 seconds
+                setTimeout(() => {
+                    if (onClose) {
+                        onClose();
+                    }
+                }, 3000);
 
             } catch (error) {
-                console.error('Error creating order on backend:', error);
+                console.error('Payment error:', error);
+                // Handle error silently
             }
             setIsProcessing(false);
         });
@@ -310,6 +348,7 @@ const ReviewPurchaseModal = ({ orderId, seletedOrderItems, amount, setRevisions,
                                             message={message}
                                             setMessage={setMessage}
                                             setOrderStatus={setOrderStatus}
+                                            onClose={onClose}
                                         />
                                     </Elements>
                                 )}
@@ -330,9 +369,10 @@ ReviewPurchaseModal.propTypes = {
     message: PropTypes.string,
     setMessage: PropTypes.func.isRequired,
     setOrderStatus: PropTypes.func.isRequired,
+    onClose: PropTypes.func,
 };
 
-const StripePaymentForm = ({ finalTotal, setIsPaymentComplete, isProcessing, setIsProcessing, orderId, service_id, setRevisions, message, setMessage, setOrderStatus }) => {
+const StripePaymentForm = ({ finalTotal, setIsPaymentComplete, isProcessing, setIsProcessing, orderId, service_id, setRevisions, message, setMessage, setOrderStatus, onClose }) => {
     const stripe = useStripe();
     const elements = useElements();
     const [error, setError] = useState(null);
@@ -356,10 +396,9 @@ const StripePaymentForm = ({ finalTotal, setIsPaymentComplete, isProcessing, set
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
-                    'Authorization': `Bearer ${user}`,
+                    'Authorization': `Bearer ${getUserToken(user)}`,
                 }
             });
-
 
             // Run Send revision after payment complete
             const response = await axios.post(API_ENDPOINT + 'revision', {
@@ -369,19 +408,32 @@ const StripePaymentForm = ({ finalTotal, setIsPaymentComplete, isProcessing, set
                 transaction_id: transactionId
             }, {
                 headers: {
-                    'Authorization': `Bearer ${user}`,
+                    'Authorization': `Bearer ${getUserToken(user)}`,
                 },
             });
 
-            setRevisions(response.data.revision);
-            setOrderStatus(response.data.Order_status.toString());
+            console.log('Stripe payment revision API response:', response.data);
+            
+            // Handle different possible response structures
+            const revisionData = response.data.revision || response.data.data?.revision || response.data;
+            const orderStatus = response.data.Order_status || response.data.data?.Order_status || response.data.order_status;
+            
+            setRevisions(revisionData);
+            setOrderStatus(orderStatus.toString());
             setMessage('');
 
-
             setIsPaymentComplete(true);
+            
+            // Close modal after 3 seconds
+            setTimeout(() => {
+                if (onClose) {
+                    onClose();
+                }
+            }, 3000);
+            
         } catch (apiError) {
-            console.error('Error creating order on backend:', apiError);
-            setError('Order confirmation failed. Please contact support.');
+            console.error('Payment error:', apiError);
+            setError('Payment failed. Please try again.');
         }
     };
 
@@ -448,6 +500,7 @@ StripePaymentForm.propTypes = {
     message: PropTypes.string,
     setMessage: PropTypes.func.isRequired,
     setOrderStatus: PropTypes.func.isRequired,
+    onClose: PropTypes.func,
 };
 
 export default MessageModal;

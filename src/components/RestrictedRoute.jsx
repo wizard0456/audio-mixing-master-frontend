@@ -12,10 +12,21 @@ const RestrictedRoute = ({ children, redirectIfLoggedIn, redirectIfNotLoggedIn }
         const checkAuth = () => {
             let user = null;
 
-            if (localStorage.getItem('user') !== null) {
-                user = JSON.parse(localStorage.getItem('user'));
-            } else if (Cookies.get('user') !== undefined) {
-                user = JSON.parse(Cookies.get('user'));
+            const localStorageUser = localStorage.getItem('user');
+            const cookieUser = Cookies.get('user');
+
+            if (localStorageUser !== null && localStorageUser !== 'undefined') {
+                try {
+                    user = JSON.parse(localStorageUser);
+                } catch (error) {
+                    localStorage.removeItem("user");
+                }
+            } else if (cookieUser !== undefined && cookieUser !== 'undefined') {
+                try {
+                    user = JSON.parse(cookieUser);
+                } catch (error) {
+                    Cookies.remove("user");
+                }
             }
 
             setIsAuthenticated(!!user);

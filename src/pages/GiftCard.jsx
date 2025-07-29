@@ -6,7 +6,7 @@ import ReactPaginate from 'react-paginate';
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import Loader from '../components/Loader';
 import { useSelector } from 'react-redux';
-import { selectUser } from '../reducers/authSlice';
+import { selectUser, getUserToken } from '../reducers/authSlice';
 
 const GiftCard = () => {
     const [giftCards, setGiftCards] = useState([]);
@@ -24,16 +24,16 @@ const GiftCard = () => {
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
-                        'Authorization': `Bearer ${user}`,
+                        'Authorization': `Bearer ${getUserToken(user)}`,
                     },
                 });
                 setGiftCards(response.data.data);
                 setCurrentPage(response.data.current_page);
                 setPageCount(response.data.last_page);
-                setLoading(false); // Stop loading
             } catch (error) {
-                console.error('Failed to fetch gift cards:', error);
-                setLoading(false); // Stop loading
+                // Handle error silently
+            } finally {
+                setLoading(false);
             }
         };
 

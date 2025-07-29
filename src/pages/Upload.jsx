@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { FolderIcon, LinkIcon } from '@heroicons/react/24/outline';
 import axios from "axios";
@@ -8,11 +8,14 @@ import LOGO from "../assets/images/logo.png";
 import UnionIcon from "../assets/images/union.png";
 import PurpleShadowBG from "../assets/images/purple-shadow-bg.webp";
 import GreenShadowBG from "../assets/images/green-shadow-bg.webp";
+import { Link, useNavigate } from "react-router-dom";
 
 const Upload = () => {
     const [isFileUpload, setIsFileUpload] = useState(false);
-
     const { register, reset, handleSubmit, formState: { errors, isSubmitting }, clearErrors } = useForm();
+    const [linkValue, setLinkValue] = useState("");
+    const formRef = useRef(null);
+    const navigate = useNavigate();
 
     const onSubmit = async (data) => {
         const formData = new FormData();
@@ -45,6 +48,7 @@ const Upload = () => {
             });
 
             reset();
+            setLinkValue("");
 
             toast.success(response.data.message, {
                 position: "top-center",
@@ -59,18 +63,18 @@ const Upload = () => {
             });
 
         } catch (error) {
-            console.log(error.response.data.error);
-            toast.error(error.response.data.error, {
+            toast.error(error.response?.data?.error || "Upload failed", {
                 position: "top-center",
                 autoClose: 3000,
                 hideProgressBar: true,
                 closeOnClick: true,
-                pauseOnHover: false,
-                draggable: false,
+                pauseOnHover: true,
+                draggable: true,
                 progress: undefined,
-                theme: "light",
-                transition: Slide,
+                transition: Slide
             });
+        } finally {
+            // setIsLoading(false); // This line was not in the new_code, so it's removed.
         }
     };
 
@@ -100,6 +104,16 @@ const Upload = () => {
         return true;
     };
 
+    // Scroll to form handler
+    const handleScrollToForm = (e) => {
+        e.preventDefault();
+        if (formRef.current) {
+            const yOffset = -200; // Offset for fixed header or spacing
+            const y = formRef.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            window.scrollTo({ top: y, behavior: "smooth" });
+        }
+    };
+
     return (
         <main>
             <section className="mt-24 relative z-20 text-white mb-24 px-5 md:px-10 xl:px-0">
@@ -120,24 +134,30 @@ const Upload = () => {
                             <div className="w-16 h-16 flex items-center justify-center bg-[#4CC800] rounded-full text-3xl font-bold">
                                 1
                             </div>
-                            <p className="font-THICCCBOI-Medium font-medium text-base leading-6 text-center lg:text-left lg:text-xl lg:leading-7 capitalize text-black"><span className="text-[#4CC800] font-bold">Upload</span> your Files</p>
+                            <p className="font-THICCCBOI-Medium font-medium text-base leading-6 text-center lg:text-left lg:text-xl lg:leading-7 capitalize text-black">
+                                <a className="text-[#4CC800] font-bold" target="_blank" rel="noopener noreferrer" href="https://wetransfer.com/?to=icemusicmedia@gmail.com">Upload</a> your Files
+                            </p>
                         </div>
                         <div className="bg-white  flex flex-col gap-5 p-8 rounded-[20px] items-center">
                             <div className="w-16 h-16 flex items-center justify-center bg-[#4CC800] rounded-full text-3xl font-bold">
                                 2
                             </div>
-                            <p className="font-THICCCBOI-Medium font-medium text-base leading-6 text-center lg:text-left lg:text-xl lg:leading-7 capitalize text-black"><span className="text-[#4CC800] font-bold">Fill</span> out the form.</p>
+                            <p className="font-THICCCBOI-Medium font-medium text-base leading-6 text-center lg:text-left lg:text-xl lg:leading-7 capitalize text-black">
+                                <a className="text-[#4CC800] font-bold cursor-pointer" href="#form-section" onClick={handleScrollToForm}>Fill</a> out the form.
+                            </p>
                         </div>
                         <div className="bg-white  flex flex-col gap-5 p-8 rounded-[20px] items-center">
                             <div className="w-16 h-16 flex items-center justify-center bg-[#4CC800] rounded-full text-3xl font-bold">
                                 3
                             </div>
-                            <p className="font-THICCCBOI-Medium font-medium text-base leading-6 text-center lg:text-left lg:text-xl lg:leading-7 capitalize text-black"><span className="text-[#4CC800] font-bold">choose</span> your required service.</p>
+                            <p className="font-THICCCBOI-Medium font-medium text-base leading-6 text-center lg:text-left lg:text-xl lg:leading-7 capitalize text-black">
+                                <Link to="/select-services" className="text-[#4CC800] font-bold">choose</Link> your required service.
+                            </p>
                         </div>
                     </div>
                     <div className="bg-[#060505] border flex-col-reverse lg:flex-row border-[#7E7E7E] rounded-[20px] p-4 md:p-8 flex items-center justify-center gap-8">
                         <div className='w-full lg:w-1/2 '>
-                            <form className="w-full flex flex-col items-center sm:items-start gap-5" onSubmit={handleSubmit(onSubmit)}>
+                            <form ref={formRef} id="form-section" className="w-full flex flex-col items-center sm:items-start gap-5" onSubmit={handleSubmit(onSubmit)}>
                                 <div className="flex flex-col sm:flex-row gap-5 w-full">
                                     <div className="w-full">
                                         <input
@@ -182,35 +202,16 @@ const Upload = () => {
                                         {errors.tarck_title && <span className="text-red-500">{errors.tarck_title.message}</span>}
                                     </div>
                                 </div>
-                                <div className="w-full flex items-stretch gap-5">
-                                    {isFileUpload ? (
-                                        <input
-                                            type="file"
-                                            autoComplete="off"
-                                            accept="audio/*"
-                                            multiple
-                                            className="w-full px-[15px] py-[10px] bg-[#171717] text-white rounded-[10px] focus:outline-none focus:ring-2 focus:ring-green-500"
-                                            {...register('audio', {
-                                                required: "File is required",
-                                                validate: validateAudioFile,
-                                            })}
-                                        />
-                                    ) : (
-                                        <input
-                                            type="text"
-                                            autoComplete="off"
-                                            placeholder="Paste file link here."
-                                            className="w-full p-[15px] bg-[#171717] text-white text-base leading-4 font-Roboto font-normal rounded-[10px] focus:outline-none focus:ring-2 focus:ring-green-500"
-                                            {...register('audio', { required: "File link is required", validate: validateAudioLink })}
-                                        />
-                                    )}
-                                    <button
-                                        type="button"
-                                        className="bg-[#171717] text-white p-3 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-green-500"
-                                        onClick={toggleInputMode}
-                                    >
-                                        {isFileUpload ? <LinkIcon width={20} height={20} /> : <FolderIcon width={20} height={20} />}
-                                    </button>
+                                <div className="w-full flex items-stretch gap-2">
+                                    <input
+                                        type="text"
+                                        autoComplete="off"
+                                        placeholder="Paste your link to file here (e.g., WeTransfer, Google Drive, Dropbox)"
+                                        className="w-full p-[15px] bg-[#171717] text-white text-base leading-4 font-Roboto font-normal rounded-[10px] focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        {...register('audio', { required: "Google Drive link is required", validate: validateAudioLink })}
+                                        value={linkValue}
+                                        onChange={e => setLinkValue(e.target.value)}
+                                    />
                                 </div>
                                 {errors.audio && <span className="text-red-500">{errors.audio.message}</span>}
                                 <div className="w-full">
@@ -234,7 +235,7 @@ const Upload = () => {
                                     />
                                 </div>
                                 <button type='submit' disabled={isSubmitting} className='primary-gradient transition-all duration-300 ease-in-out active:scale-95 font-Montserrat font-medium text-base leading-4 text-white h-[48px] px-12 w-fit flex items-center justify-center rounded-full'>
-                                    {isSubmitting ? "Sending..." : "Send File"}
+                                    {isSubmitting ? "Submitting..." : "Submit"}
                                 </button>
                             </form>
                         </div>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { HelmetProvider } from 'react-helmet-async';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 
@@ -23,6 +24,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ForgetPassword from './pages/ForgetPassoword';
 import ResetPassword from './pages/ResetPassword';
+import EmailVerification from './pages/EmailVerification';
 import OrderConfirmation from './pages/OrderConfirmation';
 import NotFound from './pages/NotFound';
 
@@ -31,7 +33,7 @@ import RestrictedRoute from './components/RestrictedRoute';
 import Preloader from './components/Preloader';  // Ensure Preloader component is imported
 
 // Importing Reducers
-import { addUser, logout, selectUser } from './reducers/authSlice';
+import { addUser, logout, selectUser, getUserToken } from './reducers/authSlice';
 import { API_ENDPOINT } from './utils/constants';
 import { clearUser, setUser } from './reducers/userSlice';
 import { addToCart, fetchCartItems, getCartItems, saveCartItemsToLocalStorage } from './reducers/cartSlice';
@@ -43,6 +45,8 @@ import RefundPolicy from './pages/RefundPolicy';
 import TermsConditions from './pages/TermsConditions';
 import MFIT from './pages/MFIT';
 import Blog from './pages/Blog';
+import BlogPost from './pages/BlogPost';
+
 import GiftCard from './pages/GiftCard';
 
 const router = createBrowserRouter([
@@ -52,7 +56,7 @@ const router = createBrowserRouter([
     children: [
       { path: '/', element: <Home /> },
       { path: '/upload', element: <Upload /> },
-      { path: '/services', element: <Services /> },
+      { path: '/select-services', element: <Services /> },
       { path: '/samples', element: <Samples /> },
       { path: '/faq', element: <Faq /> },
       { path: '/reviews', element: <Reviews /> },
@@ -62,20 +66,19 @@ const router = createBrowserRouter([
       { path: '/cart', element: <Cart /> },
       { path: '/favorites', element: (<RestrictedRoute redirectIfNotLoggedIn="/"><Favorites /></RestrictedRoute>) },
       { path: '/user-gift-coupon', element: (<RestrictedRoute redirectIfNotLoggedIn="/"><GiftCard /></RestrictedRoute>) },
-      { path: '/services-all', element: <Products /> },
-      { path: '/services/:productName', element: <ProductDetail /> },
-      { path: '/order-confirmation/:orderId', element: <RestrictedRoute redirectIfNotLoggedIn="/"><OrderConfirmation /></RestrictedRoute> },
+      { path: '/services', element: <Products /> },
+      { path: '/service-details/:productName', element: <ProductDetail /> },
+      { path: '/order-confirmation/:orderId', element: <OrderConfirmation /> },
       { path: '/orders', element: <RestrictedRoute redirectIfNotLoggedIn="/"><OrderListPage /></RestrictedRoute> },
       { path: '/order/:orderId', element: <RestrictedRoute redirectIfNotLoggedIn="/"><OrderDetailPage /></RestrictedRoute> },
       { path: '/privacy-policy', element: <PrivacyPolicy /> },
       { path: '/refund-policy', element: <RefundPolicy /> },
       { path: '/terms-and-conditions', element: <TermsConditions /> },
       { path: '/mfit', element: <MFIT /> },
+      { path: '/blog', element: <Blog /> },
+      { path: '/blog/:postId', element: <BlogPost /> },
+
     ],
-  },
-  {
-    path: '/blog',
-    element: <Blog />
   },
   {
     path: '/login',
@@ -94,6 +97,10 @@ const router = createBrowserRouter([
     element: (<RestrictedRoute redirectIfLoggedIn="/"><ResetPassword /></RestrictedRoute>),
   },
   {
+    path: "/verify-email/:userId/:token",
+    element: (<RestrictedRoute redirectIfLoggedIn="/"><EmailVerification /></RestrictedRoute>),
+  },
+  {
     path: '*',
     element: <NotFound />,
   }
@@ -107,12 +114,25 @@ export default function App() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      let user;
-      if (localStorage.getItem("user")) {
-        user = JSON.parse(localStorage.getItem("user"));
-      } else if (Cookies.get("user")) {
-        user = JSON.parse(Cookies.get("user"));
+      let user = null;
+      
+      const localStorageUser = localStorage.getItem("user");
+      const cookieUser = Cookies.get("user");
+
+      if (localStorageUser !== null && localStorageUser !== 'undefined') {
+        try {
+          user = JSON.parse(localStorageUser);
+        } catch (error) {
+          localStorage.removeItem("user");
+        }
+      } else if (cookieUser !== undefined && cookieUser !== 'undefined') {
+        try {
+          user = JSON.parse(cookieUser);
+        } catch (error) {
+          Cookies.remove("user");
+        }
       }
+
       if (user) {
         dispatch(addUser(user));
       } else {
@@ -127,9 +147,12 @@ export default function App() {
     const fetchData = async () => {
       if (user) {
         try {
-          const userInfoData = await axios.get(`${API_ENDPOINT}me`, {
+          // Extract token from user object
+          const token = getUserToken(user);
+          
+          const userInfoData = await axios.get(`${API_ENDPOINT}auth/me`, {
             headers: {
-              Authorization: `Bearer ${user}`,
+              Authorization: `Bearer ${token}`,
               "content-type": "application/json",
               "Accept": "application/json",
             },
@@ -148,13 +171,21 @@ export default function App() {
 
           const userFavoritesData = await axios.get(`${API_ENDPOINT}my-favourites`, {
             headers: {
-              Authorization: `Bearer ${user}`,
+              Authorization: `Bearer ${token}`,
               "content-type": "application/json",
               "Accept": "application/json",
             },
           });
 
-          dispatch(setFavorites(userFavoritesData.data.data));
+          // Handle the new JSON structure with pagination
+          let favoritesData = [];
+          if (userFavoritesData.data && userFavoritesData.data.data && Array.isArray(userFavoritesData.data.data)) {
+            favoritesData = userFavoritesData.data.data;
+          } else if (Array.isArray(userFavoritesData.data)) {
+            favoritesData = userFavoritesData.data;
+          }
+
+          dispatch(setFavorites(favoritesData));
         } catch (error) {
           if (error?.response?.status == 401) {
             dispatch(logout());
@@ -162,7 +193,6 @@ export default function App() {
             dispatch(saveCartItemsToLocalStorage());
             dispatch(clearFavorites());
           }
-          console.log(error.message);
         }
       }
 
@@ -176,5 +206,9 @@ export default function App() {
     return <Preloader />;  // Show Preloader until loading is false
   }
 
-  return <RouterProvider router={router} />;
+  return (
+    <HelmetProvider>
+      <RouterProvider router={router} />
+    </HelmetProvider>
+  );
 }

@@ -1,21 +1,39 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import LOGO from "../assets/images/logo.png";
 import loginBg from "../assets/images/login-bg.webp";
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ArrowLeftIcon, EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline"; // Importing eye icons for show/hide password
 import { API_ENDPOINT } from '../utils/constants';
 import { toast, Slide } from "react-toastify";
 import axios from 'axios';
 
 const Signup = () => {
-    const { register, handleSubmit, watch, reset, formState: { errors } } = useForm({
+    const location = useLocation();
+    const { register, handleSubmit, watch, reset, formState: { errors }, setValue } = useForm({
         mode: "onSubmit"
     });
 
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);  // State for password visibility
     const [showConfirmPassword, setShowConfirmPassword] = useState(false); // State for confirm password visibility
+    const [isFromOrderConfirmation, setIsFromOrderConfirmation] = useState(false);
+
+    // Check if user came from order confirmation page
+    useEffect(() => {
+        if (location.state?.fromOrderConfirmation) {
+            setIsFromOrderConfirmation(true);
+            
+            // Pre-fill form with guest information if available
+            if (location.state?.guestInfo) {
+                const guestInfo = location.state.guestInfo;
+                setValue('first_name', guestInfo.first_name || '');
+                setValue('last_name', guestInfo.last_name || '');
+                setValue('email', guestInfo.email || '');
+                setValue('phone_number', guestInfo.phone || '');
+            }
+        }
+    }, [location.state, setValue]);
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -57,7 +75,7 @@ const Signup = () => {
 
             reset();
         } catch (error) {
-            toast.error(error.response?.data?.error || error.message, {
+            toast.error(error.response?.data?.message || error.message, {
                 position: "top-center",
                 autoClose: 10000,
                 hideProgressBar: true,
@@ -90,6 +108,13 @@ const Signup = () => {
                 <div className='flex flex-col gap-3'>
                     <img src={LOGO} alt="Logo Icon" />
                     <h6 className='font-THICCCBOI-SemiBold font-semibold text-base leading-4 text-center uppercase tracking-[.6em]'>Signup</h6>
+                    {isFromOrderConfirmation && (
+                        <div className="bg-[#4CC800] bg-opacity-10 border border-[#4CC800] rounded-lg p-4 mt-4">
+                            <p className="text-[#4CC800] font-THICCCBOI-SemiBold text-sm text-center">
+                                🎯 Create your account to track your order and access your files!
+                            </p>
+                        </div>
+                    )}
                 </div>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="w-full flex flex-col gap-5">

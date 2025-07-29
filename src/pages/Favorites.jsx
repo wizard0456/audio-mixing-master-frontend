@@ -26,10 +26,9 @@ const Favorites = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
 
     useEffect(() => {
-        if (status == 'idle') {
-            dispatch(fetchFavorites());
-        }
-    }, [status, dispatch]);
+        // Always fetch favorites when component mounts
+        dispatch(fetchFavorites());
+    }, [dispatch]);
 
     function handleRemoveFromFavorites(id) {
         dispatch(deleteFavorite(id));
@@ -67,8 +66,13 @@ const Favorites = () => {
             let productAvailable = cartItems.filter(item => (item.service_id == product.service_id));
 
             if (productAvailable && productAvailable.length > 0) {
+                // Send only the new quantity to add, not the total
                 dispatch(addToCart({
-                    services: [{ ...productAvailable[0], qty: productAvailable[0]?.qty + 1, total_price: productAvailable[0]?.total_price + Number(product.price) }],
+                    services: [{ 
+                        ...product, 
+                        qty: 1, 
+                        total_price: Number(product.price) 
+                    }],
                     isIntialPageLoad: false,
                 }));
             } else {
@@ -93,9 +97,6 @@ const Favorites = () => {
         setModalIsOpen(false);
         document.body.style.overflow = 'auto';
     };
-
-
-
 
     return (
         <main>
@@ -122,61 +123,77 @@ const Favorites = () => {
                         <Loader />
                     ) : status == 'failed' ? (
                         <p className='text-red-500'>Error: {error}</p>
-                    ) : favorites?.length == 0 ? (
+                    ) : !Array.isArray(favorites) ? (
+                        <p className='text-center text-red-500'>Error: Invalid favorites data format</p>
+                    ) : favorites.length == 0 ? (
                         <p className='text-center'>No favorite items found.</p>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-16">
-                            {favorites?.map((favorite) => (
-                                <div key={favorite.id} className='flex flex-col items-center justify-center gap-5'>
-                                    <div className='relative top-0 w-full group bg-black rounded-[20px]'>
-                                        {favorite?.label_name && (
-                                            <span className='bg-[#0B1306] text-[#4CC800] py-2 px-5 shadow-[0px 4px 24px 0px #4CC80033] rounded-full font-THICCCBOI-Medium font-medium text-[12px] leading-4 absolute -top-4 z-20 left-[10%]'>
-                                                {favorite?.label_name}
-                                            </span>
-                                        )}
-                                        <Link to={`/services/${favorite.name.toLowerCase().replace(/ /g, "-")}-p${favorite.service_id}`} state={{ service_id: favorite.service_id }} className='block w-full overflow-hidden rounded-[20px]'>
-                                            <img src={`${Number(favorite.is_url) ? favorite.image : DOMAIN + favorite.image}`} className='w-full relative top-0 z-10 transition-transform transform group-hover:scale-125 h-72 object-cover object-center' alt={favorite?.name} />
+                            {favorites.map((favorite) => {
+                                // Ensure we have the required data
+                                if (!favorite || !favorite.service_id) {
+                                    return null;
+                                }
+
+                                const favoriteName = favorite.name || 'Unknown Service';
+                                const favoriteImage = favorite.image || '';
+                                const favoritePrice = favorite.price || 0;
+                                const favoriteDiscountedPrice = favorite.discounted_price || 0;
+                                const favoriteServiceType = favorite.service_type || 'one_time';
+                                const favoriteLabelName = favorite.label_name || '';
+
+                                return (
+                                    <div key={favorite.id || favorite.service_id} className='flex flex-col items-center justify-center gap-5'>
+                                        <div className='relative top-0 w-full group bg-black rounded-[20px]'>
+                                            {favoriteLabelName && (
+                                                <span className='bg-[#0B1306] text-[#4CC800] py-2 px-5 shadow-[0px 4px 24px 0px #4CC80033] rounded-full font-THICCCBOI-Medium font-medium text-[12px] leading-4 absolute -top-4 z-20 left-[10%]'>
+                                                    {favoriteLabelName}
+                                                </span>
+                                            )}
+                                            <Link to={`/service-details/${favorite.service_id}`} state={{ service_id: favorite.service_id }} className='block w-full overflow-hidden rounded-[20px]'>
+                                                <img src={`${Number(favorite.is_url) ? favoriteImage : DOMAIN + favoriteImage}`} className='w-full relative top-0 z-10 transition-transform transform group-hover:scale-125 h-72 object-cover object-center' alt={favoriteName} />
+                                            </Link>
+                                            {user && (
+                                                <button className='absolute -bottom-4 right-[10%] z-20 p-2 bg-white rounded-full' onClick={() => handleRemoveFromFavorites(favorite.service_id)}>
+                                                    <HeartIcon className="w-4 h-4" fill={"#4CC800"} stroke='#4CC800' />
+                                                </button>
+                                            )}
+                                        </div>
+
+                                        <Link to={`/select-services/${favoriteName.toLowerCase().replace(/ /g, "-")}-p${favorite.service_id}`} state={{ service_id: favorite.service_id }} className='block w-full'>
+                                            <div className='w-full'>
+                                                <h4 className='font-THICCCBOI-Bold font-bold text-lg leading-9 line-clamp-1'>{favoriteName}</h4>
+                                                <div className='flex justify-between items-center'>
+                                                    <p className='text-base font-normal font-THICCCBOI flex gap-1 items-end'>
+                                                        {(Number(favoriteDiscountedPrice) > 0) && (
+                                                            <span className='text-[#8D8D8D] line-through'>${favoritePrice}</span>
+                                                        )}
+                                                        <span className='text-base text-white font-semibold'>${(Number(favoriteDiscountedPrice) > 0) ? Number(favoriteDiscountedPrice) : Number(favoritePrice)}</span>
+                                                    </p>
+                                                    {Number(favoriteDiscountedPrice) > 0 && (
+                                                        <p className='font-THICCCBOI py-1 px-2 text-base font-semibold text-[#4CC800] bg-[#0B1306] rounded-md'>
+                                                            Save <span>{Math.round(((Number(favoritePrice) - Number(favoriteDiscountedPrice)) / Number(favoritePrice)) * 100)}%</span>
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </div>
                                         </Link>
-                                        {user && (
-                                            <button className='absolute -bottom-4 right-[10%] z-20 p-2 bg-white rounded-full' onClick={() => handleRemoveFromFavorites(favorite.service_id)}>
-                                                <HeartIcon className="w-4 h-4" fill={"#4CC800"} stroke='#4CC800' />
+
+                                        {favoriteServiceType == "subscription" ? (
+                                            <button
+                                                className='primary-gradient transition-all duration-300 ease-in-out active:scale-95 text-base text-center px-4 md:px-6 py-[10px] rounded-full font-Montserrat font-medium leading-4 flex gap-2 justify-center items-center w-fit mt-2'
+                                                onClick={() => openSubscriptionModal(favorite)}
+                                            >
+                                                Subscribe Now <ShoppingCartIcon className="h-5 w-5" stroke='#fff' />
+                                            </button>
+                                        ) : (
+                                            <button className='primary-gradient transition-all duration-300 ease-in-out active:scale-95 text-base text-center px-4 md:px-6 py-[10px] rounded-full font-Montserrat font-medium leading-4 flex gap-2 justify-center items-center w-fit mt-2' onClick={() => addToCartHandler(favorite)}>
+                                                Add to cart <ShoppingCartIcon className="h-5 w-5" stroke='#fff' />
                                             </button>
                                         )}
                                     </div>
-
-                                    <Link to={`/services/${favorite.name.toLowerCase().replace(/ /g, "-")}-p${favorite.service_id}`} state={{ service_id: favorite.service_id }} className='block w-full'>
-                                        <div className='w-full'>
-                                            <h4 className='font-THICCCBOI-Bold font-bold text-lg leading-9 line-clamp-1'>{favorite?.name}</h4>
-                                            <div className='flex justify-between items-center'>
-                                                <p className='text-base font-normal font-THICCCBOI flex gap-1 items-end'>
-                                                    {(Number(favorite.discounted_price) > 0) && (
-                                                        <span className='text-[#8D8D8D] line-through'>${favorite?.price}</span>
-                                                    )}
-                                                    <span className='text-base text-white font-semibold'>${(Number(favorite.discounted_price) > 0) ? Number(favorite.discounted_price) : Number(favorite.price)}</span>
-                                                </p>
-                                                {Number(favorite?.discounted_price) > 0 && (
-                                                    <p className='font-THICCCBOI py-1 px-2 text-base font-semibold text-[#4CC800] bg-[#0B1306] rounded-md'>
-                                                        Save <span>{Math.round(((Number(favorite?.price) - Number(favorite?.discounted_price)) / Number(favorite?.price)) * 100)}%</span>
-                                                    </p>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </Link>
-
-                                    {favorite?.service_type == "subscription" ? (
-                                        <button
-                                            className='primary-gradient transition-all duration-300 ease-in-out active:scale-95 text-base text-center px-4 md:px-6 py-[10px] rounded-full font-Montserrat font-medium leading-4 flex gap-2 justify-center items-center w-fit mt-2'
-                                            onClick={() => openSubscriptionModal(favorite)}
-                                        >
-                                            Subscribe Now <ShoppingCartIcon className="h-5 w-5" stroke='#fff' />
-                                        </button>
-                                    ) : (
-                                        <button className='primary-gradient transition-all duration-300 ease-in-out active:scale-95 text-base text-center px-4 md:px-6 py-[10px] rounded-full font-Montserrat font-medium leading-4 flex gap-2 justify-center items-center w-fit mt-2' onClick={() => addToCartHandler(favorite)}>
-                                            Add to cart <ShoppingCartIcon className="h-5 w-5" stroke='#fff' />
-                                        </button>
-                                    )}
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     )}
                 </div>

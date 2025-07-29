@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addItem, addToCart, getCartItems } from '../reducers/cartSlice';
 import { selectUser } from '../reducers/authSlice';
 import { Slide, toast } from 'react-toastify';
-import { addFavorite, deleteFavorite, getFavorites } from '../reducers/userFavirotesSlice';
+import { addFavorite, deleteFavorite, getFavorites, fetchFavorites } from '../reducers/userFavirotesSlice';
 import CustomModal from '../components/CustomModal';
 import SubscriptionModalContent from '../components/SubscriptionModalContent'; // The modal content component
 
@@ -68,7 +68,6 @@ export default function Services() {
                 transition: Slide,
             });
         } catch (error) {
-            console.log(error.response.data.message);
             toast.error(error.response.data.message, {
                 position: "top-center",
                 autoClose: 3000,
@@ -88,7 +87,7 @@ export default function Services() {
             try {
                 const response = await axios({
                     method: 'GET',
-                    url: `${API_ENDPOINT}categories`,
+                    url: `${API_ENDPOINT}categories/with-count`,
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
@@ -99,14 +98,38 @@ export default function Services() {
                     throw new Error(response.data.error);
                 }
 
-                setServices(mapApiData(response.data.filter(item => item.id !== 1)));
+                // Handle new API structure with success wrapper
+                let apiData;
+                if (response.data && response.data.success && Array.isArray(response.data.data)) {
+                    apiData = response.data.data;
+                } else if (response.data) {
+                    // Fallback for old API structure
+                    apiData = response.data;
+                } else {
+                    return;
+                }
+
+                setServices(mapApiData(apiData.filter(item => item.id !== 1)));
                 setLoading(false);
             } catch (error) {
-                console.log(error);
                 setLoading(false);
             }
         })();
     }, []);
+
+    // Fetch favorites if user is authenticated but favorites haven't been loaded
+    useEffect(() => {
+        if (user && favorites.length === 0) {
+            dispatch(fetchFavorites());
+        }
+    }, [user, favorites.length, dispatch]);
+
+    // Fetch favorites when component mounts and user is logged in
+    useEffect(() => {
+        if (user) {
+            dispatch(fetchFavorites());
+        }
+    }, [user, dispatch]);
 
     const selectedServiceData = services.find(service => service.id == selectedService);
 
@@ -142,8 +165,13 @@ export default function Services() {
             let productAvailable = cartItems.filter(item => (item.service_id == product.service_id));
 
             if (productAvailable && productAvailable.length > 0) {
+                // Send only the new quantity to add, not the total
                 dispatch(addToCart({
-                    services: [{ ...productAvailable[0], qty: Number(productAvailable[0]?.qty) + 1, total_price: Number(productAvailable[0]?.total_price) + Number(product.price) }],
+                    services: [{ 
+                        ...product, 
+                        qty: 1, 
+                        total_price: Number(product.price) 
+                    }],
                     isIntialPageLoad: false
                 }));
             } else {
@@ -176,6 +204,11 @@ export default function Services() {
     function handleAddToFavorites(id) {
         dispatch(addFavorite(id));
     }
+
+    // Helper function to check if a package is in favorites
+    const isPackageInFavorites = (packageId) => {
+        return favorites.some(fav => String(fav.service_id) === String(packageId));
+    };
 
     return (
         <main className='mt-24'>
@@ -248,7 +281,7 @@ export default function Services() {
                                                 </div>
 
                                                 <div className="w-full flex justify-between items-center">
-                                                    <RouterLink to="/services-all" className="font-Montserrat font-medium text-sm md:text-base leading-4 rounded-full py-3 md:py-4 px-4 sm:px-6 border">
+                                                    <RouterLink to="/services" className="font-Montserrat font-medium text-sm md:text-base leading-4 rounded-full py-3 md:py-4 px-4 sm:px-6 border">
                                                         View All Services
                                                     </RouterLink>
 
@@ -318,7 +351,7 @@ export default function Services() {
                                                                     >
                                                                         <div className="flex items-center justify-between w-2/3">
                                                                             <RouterLink
-                                                                                to={"/services/" + pkg.name.toLowerCase().replace(/ /g, "-") + `-p${pkg.id}`}
+                                                                                to={"/select-services/" + pkg.name.toLowerCase().replace(/ /g, "-") + `-p${pkg.id}`}
                                                                                 state={{ service_id: pkg.id }}
                                                                                 className="flex flex-col items-start justify-between"
                                                                             >
@@ -333,11 +366,11 @@ export default function Services() {
                                                                                 user && (
                                                                                     <button
                                                                                         className='w-10 h-10 p-2 bg-white rounded-full flex items-center justify-center'
-                                                                                        onClick={() => ((favorites.filter(fav => (fav.service_id == pkg.id)).length > 0) ? handleRemoveFromFavorites(pkg.id) : handleAddToFavorites(pkg.id))}
+                                                                                        onClick={() => (isPackageInFavorites(pkg.id) ? handleRemoveFromFavorites(pkg.id) : handleAddToFavorites(pkg.id))}
                                                                                     >
                                                                                         <HeartIcon
                                                                                             className='text-white' width={20} height={20}
-                                                                                            fill={(favorites.filter(fav => (fav.service_id == pkg.id)).length > 0) ? "#4CC800" : ""}
+                                                                                            fill={isPackageInFavorites(pkg.id) ? "#4CC800" : ""}
                                                                                             stroke='#4CC800' />
                                                                                     </button>
                                                                                 )
@@ -363,7 +396,7 @@ export default function Services() {
                                                         </>
                                                     )}
                                                     <div className="w-full flex justify-between items-center mt-8">
-                                                        <RouterLink to="/services-all" className="font-Montserrat font-medium text-sm md:text-base leading-4 rounded-full py-3 md:py-4 px-4 sm:px-6 border">
+                                                        <RouterLink to="/services" className="font-Montserrat font-medium text-sm md:text-base leading-4 rounded-full py-3 md:py-4 px-4 sm:px-6 border">
                                                             View All Services
                                                         </RouterLink>
                                                         <RouterLink

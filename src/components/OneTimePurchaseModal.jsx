@@ -9,8 +9,9 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import { selectUserInfo } from '../reducers/userSlice';
 import { loadStripe } from '@stripe/stripe-js';
-import { Elements, useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js';
+import { Elements, useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import { API_ENDPOINT } from '../utils/constants';
+import { getUserToken } from '../reducers/authSlice';
 
 // Initialize Stripe with your publishable key
 const stripePromise = loadStripe('pk_test_51MuE4RJIWkcGZUIabXuoFFrr5gMT5S9Ynq63FfkoZMVeEkq94UdXOKwK4t3msKIsQwnLwafv9JyvzIdKpbsFonwd00BWb4lWdj');
@@ -23,6 +24,13 @@ const OneTimePurchaseModal = ({ product, onClose, quantity }) => {
     const [clientSecret, setClientSecret] = useState('');
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('paypal');
     const [isProcessing, setIsProcessing] = useState(false);
+    
+    // Guest checkout state
+    const [isGuestCheckout, setIsGuestCheckout] = useState(false);
+    const [guestInfo, setGuestInfo] = useState({
+        email: '',
+        phone: ''
+    });
 
     useEffect(() => {
         paypalDispatch({
@@ -55,13 +63,13 @@ const OneTimePurchaseModal = ({ product, onClose, quantity }) => {
                         ],
                     }, {
                         headers: {
-                            'Authorization': `Bearer ${user}`,
+                            'Authorization': `Bearer ${getUserToken(user)}`,
                         },
                     });
 
                     setClientSecret(response.data || response.data);
                 } catch (error) {
-                    console.error('Error fetching client secret:', error);
+                    // Handle error silently
                 }
             };
 
@@ -70,7 +78,6 @@ const OneTimePurchaseModal = ({ product, onClose, quantity }) => {
     }, [user, product, userInfo, quantity]);
 
     const handleCancel = (data) => {
-        console.log('PayPal payment cancelled', data);
         setIsProcessing(false);
     };
 
@@ -83,28 +90,32 @@ const OneTimePurchaseModal = ({ product, onClose, quantity }) => {
                 },
             }],
         }).catch((err) => {
-            console.error('Error creating order:', err);
             setIsProcessing(false);
         });
     };
 
     const onApprove = async (data, actions) => {
-        return actions.order.capture().then(async (details) => {
-            await processOrder({
-                id: details.id,
-                amount: details.purchase_units[0].amount.value,
-                payer_name: details.payer.name.given_name + " " + details.payer.name.surname,
-                payer_email: details.payer.email_address,
-            }, "paypal");
-        }).catch(err => {
-            console.error("Error approving order:", err);
+        setIsProcessing(true);
+        try {
+            const order = await actions.order.capture();
+            const paymentDetails = {
+                id: order.id,
+                amount: (Number(product.discounted_price) || Number(product.price)) * quantity,
+                payer_name: user ? userInfo.first_name + " " + userInfo.last_name : guestInfo.email,
+                payer_email: user ? userInfo.email : guestInfo.email,
+                payer_phone: user ? (userInfo.phone || '') : guestInfo.phone,
+            };
+            
+            await processOrder(paymentDetails, "paypal");
+        } catch (error) {
+            // Handle error silently
             setIsProcessing(false);
-        });
+        }
     };
 
     const processOrder = async (paymentDetails, paymentMethod) => {
         const orderDetails = {
-            user_id: userInfo.id,
+            user_id: user ? userInfo.id : 'guest',
             cartItems: [
                 {
                     service_id: product.id.toString(),
@@ -122,6 +133,7 @@ const OneTimePurchaseModal = ({ product, onClose, quantity }) => {
             promoCode: "", // If you have a promo code logic, replace it accordingly
             payer_name: paymentDetails.payer_name,
             payer_email: paymentDetails.payer_email,
+            payer_phone: paymentDetails.payer_phone || '',
             payment_method: paymentMethod,
             order_type: "one_time",
         };
@@ -131,7 +143,7 @@ const OneTimePurchaseModal = ({ product, onClose, quantity }) => {
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
-                    'Authorization': `Bearer ${user}`,
+                    ...(user && { Authorization: `Bearer ${getUserToken(user)}` }),
                 },
             });
 
@@ -146,9 +158,7 @@ const OneTimePurchaseModal = ({ product, onClose, quantity }) => {
             });
             onClose(); // Close the modal
         } catch (error) {
-            console.error('Error creating order on backend:', error);
-        } finally {
-            setIsProcessing(false);
+            // Handle error silently
         }
     };
 
@@ -169,7 +179,7 @@ const OneTimePurchaseModal = ({ product, onClose, quantity }) => {
                         </div>
                     </div>
                     <hr className='border-[#4CC800] my-3' />
-                    {user &&
+                    {(user || isGuestCheckout) &&
                         <div className="flex justify-center gap-4 mt-4">
                             <button
                                 onClick={() => setSelectedPaymentMethod('paypal')}
@@ -208,12 +218,87 @@ const OneTimePurchaseModal = ({ product, onClose, quantity }) => {
                                             isProcessing={isProcessing}
                                             setIsProcessing={setIsProcessing}
                                             quantity={quantity}
+                                            isGuestCheckout={false}
+                                            guestInfo={null}
                                         />
                                     </Elements>
                                 )}
                             </>
+                        ) : !isGuestCheckout ? (
+                            <div className="text-center">
+                                <p className="font-THICCCBOI-SemiBold text-lg mb-4">Choose your checkout option:</p>
+                                <div className="flex flex-col gap-3">
+                                    <Link to="/login" className='primary-gradient font-Montserrat text-base leading-4 font-semibold block mx-auto text-white py-4 px-6 rounded-full w-fit transition-all duration-300 ease-in-out active:scale-95'>Login to proceed</Link>
+                                    <button
+                                        onClick={() => setIsGuestCheckout(true)}
+                                        className="bg-white text-black font-Montserrat text-base leading-4 font-medium py-4 px-6 rounded-full w-fit mx-auto transition-all duration-300 ease-in-out active:scale-95 border-2 border-gray-300"
+                                    >
+                                        Continue as Guest
+                                    </button>
+                                </div>
+                            </div>
                         ) : (
-                            <Link to="/login" className='primary-gradient font-Montserrat text-base leading-4 font-semibold block mx-auto text-white py-4 px-6 rounded-full w-fit transition-all duration-300 ease-in-out active:scale-95'>Login to proceed</Link>
+                            <>
+                                {/* Guest Information Form */}
+                                <div className="mb-6">
+                                    <h3 className="font-THICCCBOI-SemiBold text-lg mb-4">Guest Information</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block font-THICCCBOI-SemiBold text-sm mb-2">Email *</label>
+                                            <input
+                                                type="email"
+                                                value={guestInfo.email}
+                                                onChange={(e) => setGuestInfo({...guestInfo, email: e.target.value})}
+                                                className="w-full p-3 bg-[#EDEDED] text-black rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                                required
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block font-THICCCBOI-SemiBold text-sm mb-2">Phone Number *</label>
+                                            <input
+                                                type="tel"
+                                                value={guestInfo.phone}
+                                                onChange={(e) => setGuestInfo({...guestInfo, phone: e.target.value})}
+                                                className="w-full p-3 bg-[#EDEDED] text-black rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                    <button
+                                        onClick={() => setIsGuestCheckout(false)}
+                                        className="text-green-500 font-THICCCBOI-SemiBold text-sm mt-2 underline"
+                                    >
+                                        ← Back to login options
+                                    </button>
+                                </div>
+
+                                {/* Payment Methods for Guest */}
+                                <>
+                                    {selectedPaymentMethod == 'paypal' && (
+                                        <PayPalButtons
+                                            createOrder={createOrder}
+                                            onApprove={onApprove}
+                                            onCancel={handleCancel}
+                                            disabled={isProcessing}
+                                        />
+                                    )}
+                                    {selectedPaymentMethod == 'stripe' && clientSecret && (
+                                        <Elements stripe={stripePromise} options={{ clientSecret }}>
+                                            <StripePaymentForm
+                                                product={product}
+                                                userInfo={null}
+                                                onClose={onClose}
+                                                navigate={navigate}
+                                                isProcessing={isProcessing}
+                                                setIsProcessing={setIsProcessing}
+                                                quantity={quantity}
+                                                isGuestCheckout={true}
+                                                guestInfo={guestInfo}
+                                            />
+                                        </Elements>
+                                    )}
+                                </>
+                            </>
                         )}
                     </div>
                 </div>
@@ -222,18 +307,52 @@ const OneTimePurchaseModal = ({ product, onClose, quantity }) => {
     );
 };
 
-const StripePaymentForm = ({ product, userInfo, onClose, navigate, isProcessing, setIsProcessing, quantity }) => {
+const StripePaymentForm = ({ product, userInfo, onClose, navigate, isProcessing, setIsProcessing, quantity, isGuestCheckout, guestInfo }) => {
     const stripe = useStripe();
     const elements = useElements();
     const [error, setError] = useState(null);
+    const [cardComplete, setCardComplete] = useState(false);
     const user = useSelector(selectUser);
+
+    const cardElementOptions = {
+        style: {
+            base: {
+                fontSize: '16px',
+                color: '#424770',
+                '::placeholder': {
+                    color: '#aab7c4',
+                },
+                iconColor: '#6772e5',
+            },
+            invalid: {
+                color: '#9e2146',
+            },
+        },
+        hidePostalCode: false,
+    };
+
+    const handleCardChange = (event) => {
+        setCardComplete(event.complete);
+        if (event.error) {
+            setError(event.error.message);
+        } else {
+            setError(null);
+        }
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         setIsProcessing(true);
+        setError(null);
 
         if (!stripe || !elements) {
             setError('Stripe is not loaded yet.');
+            setIsProcessing(false);
+            return;
+        }
+
+        if (!cardComplete) {
+            setError('Please complete your card details.');
             setIsProcessing(false);
             return;
         }
@@ -243,6 +362,13 @@ const StripePaymentForm = ({ product, userInfo, onClose, navigate, isProcessing,
                 elements,
                 confirmParams: {
                     return_url: `${window.location.origin}/order-confirmation`,
+                    payment_method_data: {
+                        billing_details: {
+                            name: isGuestCheckout ? guestInfo.email : userInfo.first_name + ' ' + userInfo.last_name,
+                            email: isGuestCheckout ? guestInfo.email : userInfo.email,
+                            phone: isGuestCheckout ? guestInfo.phone : (userInfo.phone || ''),
+                        },
+                    },
                 },
                 redirect: 'if_required',
             });
@@ -258,8 +384,9 @@ const StripePaymentForm = ({ product, userInfo, onClose, navigate, isProcessing,
                 await processOrder({
                     id: paymentIntent.id,
                     amount: paymentIntent.amount / 100,
-                    payer_name: userInfo.first_name + " " + userInfo.last_name,
-                    payer_email: userInfo.email,
+                    payer_name: isGuestCheckout ? guestInfo.email : userInfo.first_name + " " + userInfo.last_name,
+                    payer_email: isGuestCheckout ? guestInfo.email : userInfo.email,
+                    payer_phone: isGuestCheckout ? guestInfo.phone : (userInfo.phone || ''),
                 }, "stripe");
             }
         } catch (err) {
@@ -270,7 +397,7 @@ const StripePaymentForm = ({ product, userInfo, onClose, navigate, isProcessing,
 
     const processOrder = async (paymentDetails, paymentMethod) => {
         const orderDetails = {
-            user_id: userInfo.id,
+            user_id: user ? userInfo.id : 'guest',
             cartItems: [
                 {
                     service_id: product.id.toString(),
@@ -288,6 +415,7 @@ const StripePaymentForm = ({ product, userInfo, onClose, navigate, isProcessing,
             promoCode: "", // If you have a promo code logic, replace it accordingly
             payer_name: paymentDetails.payer_name,
             payer_email: paymentDetails.payer_email,
+            payer_phone: paymentDetails.payer_phone || '',
             payment_method: paymentMethod,
             order_type: "one_time",
         };
@@ -297,7 +425,7 @@ const StripePaymentForm = ({ product, userInfo, onClose, navigate, isProcessing,
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
-                    'Authorization': `Bearer ${user}`,
+                    ...(user && { Authorization: `Bearer ${getUserToken(user)}` }),
                 },
             });
 
@@ -312,24 +440,70 @@ const StripePaymentForm = ({ product, userInfo, onClose, navigate, isProcessing,
             });
             onClose(); // Close the modal
         } catch (error) {
-            console.error('Error creating order on backend:', error);
-            setError('Order confirmation failed. Please contact support.');
-            setIsProcessing(false);
+            // Handle error silently
         }
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <PaymentElement className="bg-white p-3 rounded-md mb-4" disabled={isProcessing} />
-            {error && <div className="text-red-500 mb-3">{error}</div>}
-            <button
-                type="submit"
-                disabled={!stripe || isProcessing}
-                className="bg-[#0D6EFD] font-Montserrat text-white font-normal text-base py-3 rounded-md w-full leading-6"
-            >
-                {isProcessing ? 'Processing...' : `Pay $${((Number(product.discounted_price) || Number(product.price)) * quantity).toFixed(2)}`}
-            </button>
-        </form>
+        <div className="bg-white rounded-lg p-6 shadow-sm">
+            <div className="mb-4">
+                <h3 className="font-THICCCBOI-SemiBold text-lg mb-2">Card Information</h3>
+                <p className="text-gray-600 text-sm mb-4">Enter your card details to complete the payment</p>
+            </div>
+            
+            <form onSubmit={handleSubmit}>
+                <div className="mb-4">
+                    <label className="block font-THICCCBOI-SemiBold text-sm mb-2 text-gray-700">
+                        Card Details *
+                    </label>
+                    <div className="border border-gray-300 rounded-md p-3 bg-white">
+                        <CardElement 
+                            options={cardElementOptions}
+                            onChange={handleCardChange}
+                            disabled={isProcessing}
+                        />
+                    </div>
+                </div>
+
+                {error && (
+                    <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
+                        <p className="text-red-600 text-sm">{error}</p>
+                    </div>
+                )}
+
+                <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                    <div className="flex justify-between items-center">
+                        <span className="font-THICCCBOI-SemiBold text-sm text-gray-700">Total Amount:</span>
+                        <span className="font-THICCCBOI-Bold text-lg">${((Number(product.discounted_price) || Number(product.price)) * quantity).toFixed(2)}</span>
+                    </div>
+                </div>
+
+                <button
+                    type="submit"
+                    disabled={!stripe || !cardComplete || isProcessing}
+                    className={`w-full py-3 px-4 rounded-md font-Montserrat text-base font-medium transition-all duration-200 ${
+                        !stripe || !cardComplete || isProcessing
+                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            : 'bg-[#0D6EFD] text-white hover:bg-[#0b5ed7] active:scale-95'
+                    }`}
+                >
+                    {isProcessing ? (
+                        <div className="flex items-center justify-center">
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                            Processing Payment...
+                        </div>
+                    ) : (
+                        `Pay $${((Number(product.discounted_price) || Number(product.price)) * quantity).toFixed(2)}`
+                    )}
+                </button>
+
+                <div className="mt-4 text-center">
+                    <p className="text-xs text-gray-500">
+                        Your payment is secured by Stripe. We never store your card details.
+                    </p>
+                </div>
+            </form>
+        </div>
     );
 };
 
@@ -341,12 +515,14 @@ OneTimePurchaseModal.propTypes = {
 
 StripePaymentForm.propTypes = {
     product: PropTypes.object.isRequired,
-    userInfo: PropTypes.object.isRequired,
+    userInfo: PropTypes.object,
     onClose: PropTypes.func.isRequired,
     navigate: PropTypes.func.isRequired,
     isProcessing: PropTypes.bool.isRequired,
     setIsProcessing: PropTypes.func.isRequired,
     quantity: PropTypes.number.isRequired,
+    isGuestCheckout: PropTypes.bool,
+    guestInfo: PropTypes.object,
 };
 
 export default OneTimePurchaseModal;

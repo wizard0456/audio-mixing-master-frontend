@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Post Template - Audio Mixing Blog</title>
+    <meta name="description" content="Template for audio mixing blog posts.">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Heroicons CDN -->
+    <script src="https://unpkg.com/@heroicons/react@2.0.18/24/outline/esm/index.js"></script>
+    
+    <style>
+        /* Custom Fonts */
+        @font-face {
+            font-family: 'THICCCBOI-Black';
+            src: url('data:font/woff2;base64,d09GMgABAAAAAA...') format('woff2');
+            font-weight: 900;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'THICCCBOI-Bold';
+            src: url('data:font/woff2;base64,d09GMgABAAAAAA...') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'THICCCBOI-Medium';
+            src: url('data:font/woff2;base64,d09GMgABAAAAAA...') format('woff2');
+            font-weight: 500;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'THICCCBOI-Regular';
+            src: url('data:font/woff2;base64,d09GMgABAAAAAA...') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+        }
+        
+        /* Custom Styles */
+        .font-THICCCBOI-Black { font-family: 'THICCCBOI-Black', sans-serif; }
+        .font-THICCCBOI-Bold { font-family: 'THICCCBOI-Bold', sans-serif; }
+        .font-THICCCBOI-Medium { font-family: 'THICCCBOI-Medium', sans-serif; }
+        .font-THICCCBOI-Regular { font-family: 'THICCCBOI-Regular', sans-serif; }
+        .font-Montserrat { font-family: 'Montserrat', sans-serif; }
+        .font-Roboto { font-family: 'Roboto', sans-serif; }
+        
+        /* Blog Content Styles */
+        .blog-content { 
+            
+            margin: 0 auto; 
+            line-height: 1.8; 
+        }
+        .blog-content h2 { 
+            color: #4CC800; 
+            margin-top: 2rem; 
+            margin-bottom: 1rem; 
+            font-size: 1.8rem; 
+            font-family: 'THICCCBOI-Medium', sans-serif;
+        }
+        .blog-content h3 { 
+            color: #ffffff; 
+            margin-top: 1.5rem; 
+            margin-bottom: 0.75rem; 
+            font-size: 1.4rem; 
+            font-family: 'THICCCBOI-Medium', sans-serif;
+        }
+        .blog-content p { 
+            margin-bottom: 1rem; 
+            color: #e5e7eb; 
+            font-family: 'Roboto', sans-serif;
+        }
+        .blog-content ul { 
+            margin-bottom: 1rem; 
+            padding-left: 2rem; 
+        }
+        .blog-content li { 
+            margin-bottom: 0.5rem; 
+            color: #e5e7eb; 
+            font-family: 'Roboto', sans-serif;
+        }
+        .blog-content blockquote {
+            border-left: 4px solid #4CC800;
+            padding-left: 1rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: #d1d5db;
+        }
+        .blog-content code {
+            background-color: #1f2937;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-family: 'Courier New', monospace;
+            color: #f3f4f6;
+        }
+        .blog-content pre {
+            background-color: #1f2937;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        .blog-content pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        /* Meta Styles */
+        .blog-meta { 
+            display: flex; 
+            gap: 2rem; 
+            margin-bottom: 2rem; 
+            color: #9ca3af; 
+            font-size: 0.9rem; 
+            font-family: 'Montserrat', sans-serif;
+        }
+        .blog-image { 
+            width: 100%; 
+            height: 400px; 
+            object-fit: cover; 
+            border-radius: 12px; 
+            margin-bottom: 2rem;
+            padding-left: 150px; padding-right: 150px;
+        }
+
+
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .blog-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .blog-content h2 {
+                font-size: 1.5rem;
+            }
+            .blog-content h3 {
+                font-size: 1.2rem;
+            }
+
+            .blog-image { 
+           
+            
+            height: auto; 
+            padding-left: 0px; padding-right: 0px;
+        }
+        }
+        }
+        
+        /* Custom Background Gradients */
+        .bg-gradient-dark {
+            background: linear-gradient(135deg, #0B1306 0%, #1a1a1a 100%);
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4CC800;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3ba001;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <main class="mt-24">
+        <div class="max-w-[1110px] mx-auto px-5 md:px-10 xl:px-0">
+            <!-- Back Button -->
+            <div class="mb-8">
+                <a href="/blog" class="inline-flex items-center text-[#4CC800] hover:text-[#4DC801] transition-colors font-Montserrat font-medium">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    Back to Blog
+                </a>
+            </div>
+            
+            <!-- Article Header -->
+            <header class="mb-8">
+                <h1 class="text-4xl md:text-5xl font-THICCCBOI-Medium mb-4 leading-tight">
+                    Background Vocals
+                </h1>
+                <div class="blog-meta">
+                    <span>By [AUTHOR_NAME]</span>
+                    <span>[PUBLISH_DATE]</span>
+                    <span>[READ_TIME] min read</span>
+                    <span>Category: [CATEGORY_NAME]</span>
+                </div>
+                <p>I’d like to devote my column this month to a subject that seems to be a mystery to most musicians, producers, engineers, and songwriters – Background Vocals. Let’s start with a simple definition: “Background Vocals” are those that are not the lead or main vocal. They can come in various forms – ooohs, aaahs, actual repeating of the lyrics, completely different lyrics, or moans and sighs (especially in hip-hop and rap).</p>
+                <p>The people who perform these vocals also come in different shapes and sizes – from thin, sickly looking Caucasians who can read fly-shit without a drop of feeling to great big huge African American women straight outta the Church, who can turn a collective “Yeah” into a spine-tingling chant that is far more powerful than even our beloved national anthem. Put on the radio and start singing along. Chances are that even the most tone deaf among us will pick up on the “chorus” sung by the background vocals, rather than the riff-laden lead vocal, which is usually beyond the vocal ability of all but a few God-blessed individuals.</p>
+                <p>But how are these “Background Vocals” created? Well, some producers simply call upon a few favorite singers – usually a group of three – and let them “do their thing”. This means that they will play the lead vocal and musical tracks, give them a lyric sheet, and see what they come up with. Depending on who is doing the arranging among the singers, these parts will usually serve to embellish the chorus of the song, with a few pad-type harmonies thrown in on the bridge and maybe even a counterpoint on the vamp out.</p>
+            </header>
+            
+            <!-- Featured Image -->
+            <img src="https://zetdigitesting.online/blog/wp-content/uploads/2024/10/bed680ac261443f0adf1caa74eb96fdd.jpg" alt="Background Vocals" class="blog-image">
+            
+            <!-- Article Content -->
+            <article class="blog-content">
+                <p>The singers, once they agree on who is going to sing the top, middle, and bottom harmonies, will then proceed to the microphone, where they will begin the session by complaining about something. This is standard procedure for singers (and musicians, for that matter). Examples of this complaining can take various forms:</p>
+
+                <ul style="list-style-type: decimal;">
+  					<li>“I can’t hear myself in the headphones”</li>
+  					<li>“It’s too hot in here”</li>
+  					<li>“It’s too cold in here”</li>
+  					<li>“I need some water”</li>
+  					<li>“I need some hot tea”</li>
+  					<li>“I need some reverb in the phones”</li>
+  					<li>“I need less reverb in the phones”</li>
+  					<li>“I hate these phones”</li>
+				</ul>
+                
+				<p>And on and on. Oftentimes if the singers are really comfortable with their careers, they will openly ‘dog’ the song. Now, the record company, the producer, and the writer can all be in the control room listening and not even realize that they are making fun of the song, because the singers do it in a secret code. I am taking my life in my hands by revealing a few of these codes, but I believe writing is not very emotionally rewarding without certain risks, so here goes.</p>
+
+				<h2>What the background vocalists say:</h2>
+                 <blockquote>
+                    I just love the way the chorus feels
+                </blockquote>
+               
+
+                <h2>What they really mean:</h2>
+                 <blockquote>
+                    This is the worst piece of shit we have sung all week and we can’t wait to get the hell out of here.
+                </blockquote>
+
+				<p>There are other secret codes that are even harder to discern. “Thanks so much for calling me, and I hope we get to work together again soon”, really means “I’ll track you down like a dog and cut off your manhood with a butcher’s knife if I don’t get my money within a few days”. And so on and so on. Now, you can avoid any clashes with the background vocalists by taking the time to understand a few key points. In learning them, you will become a much better producer, engineer, or what have you. By not learning these points, you could become a murder victim. The first is to remember that in all likelihood the background singers are better singers than the lead vocalist.</p>
+
+				<p>Now, if the lead singer is Aretha Franklin or Tony Bennett, then that might not be true, but Aretha and Tony don’t record every day, so it is true most of the year. This is a big strain on the background singers, because they have to make someone sound good who perhaps has the vocal ability of a toad, although a pretty toad with big breasts signed to a major record company with a powerful manager and a smart lawyer. Throughout history there have even been cases where the background vocalist has become a star in their own right. Some examples of this would be Sheryl Crow, Whitney Houston, Kenny Rogers, Phil Collins, Vince Gill, and Regina Bell. (Paul McCartney once sang background in a band named after an insect, but since he really didn’t do anything worthwhile after the band broke up, he doesn’t count.) You should also keep in mind that a happy and comfortable background singer will perform longer and more efficiently. This is actually a very simple task. Making them happy and comfortable can be as easy as having a pot of fresh coffee ready for the session (don’t forget to clean that pot!) and having a jar of honey instead of sugar, since honey acts to coat the throat and prevent “dry throat”, a session-stopping malady. Also, and this is a big ‘also’, a clean and working bathroom. The toilet is important to your session, especially if you have female vocalists, because they will travel to it at least 3 times per hour. I don’t know exactly what it is that they do in there, but there must be a mystical bond between singing “ooo” and flushing. Perhaps they go in there to get in touch with their inner self, but whatever it is, if your john ain’t working, then you ain’t gonna hear no singing. Just that simple.</p>
+
+				<p>Other items to keep handy are those clip boards that office supply stores sell. This is a great help when the singers need to write notes to each other that they don’t want the producer to see – “this singer is the pits” is among the various scribbles I have collected at the end of a session. A female member of a famous family once even wrote her name down about 50 times on the clipboard, as if she was trying to memorize it. Oh well…. The last thing to remember is perhaps the most important. The tone of voice and manner in which you address the singers will determine how they react to you and how much of themselves they pour into their singing. If you talk very nicely and are polite, the singers will most times sing for longer periods than the money you are paying them warrants. They will do doubles and triples without asking for more cash. On the other hand, a few choice outbursts of “that really sucks” and “you guys are all out of tune” will often cause various pieces of furniture and even microphones to fly though the control room glass at a high speed, hurled directly at the offending party’s cranium. So goes the day-to-day life ofcreating music. In closing, remember. If you respect and treat the background vocalists right, they will give your records that gloss and gleam that says “hit”. If you don’t, after your reconstructive surgery you can always make music for multimedia computer games, which require no vocals at all.</p>
+
+
+                
+            </article>
+        </div>
+    </main>
+    
+    <!-- JavaScript for Interactive Features -->
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Add loading animation for images
+        document.querySelectorAll('img').forEach(img => {
+            img.addEventListener('load', function() {
+                this.style.opacity = '1';
+            });
+            img.style.opacity = '0';
+            img.style.transition = 'opacity 0.3s ease-in-out';
+        });
+        
+        // Add hover effects for links
+        document.querySelectorAll('a').forEach(link => {
+            link.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-1px)';
+            });
+            link.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+        
+        // Format dates
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        }
+        
+        // Update all date placeholders
+        document.querySelectorAll('[data-date]').forEach(element => {
+            const dateString = element.getAttribute('data-date');
+            if (dateString) {
+                element.textContent = formatDate(dateString);
+            }
+        });
+    </script>
+</body>
+</html> 
